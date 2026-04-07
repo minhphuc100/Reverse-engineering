@@ -16,6 +16,48 @@ Can be .exe, .obj, .dll and .lst
 
 Special case .NET assemblies (?)
 
+Small example:
+---
+nasm
+; hello.asm - 64-bit Windows Hello World (NASM)
+extern MessageBoxA
+extern ExitProcess
+
+section .data
+    caption db 'Assembly Example', 0
+    message db 'Hello, this is a small source code!', 0
+
+section .text
+    global main
+main:
+    ; Register-based calling convention for x64 Windows (Shadow Space)
+    sub rsp, 28h          ; Reserve 40 bytes of shadow space on stack
+    
+    mov rcx, 0            ; HWND hWnd = NULL
+    mov rdx, message      ; LPCSTR lpText
+    mov r8, caption       ; LPCSTR lpCaption
+    mov r9, 0             ; UINT uType = MB_OK
+    call MessageBoxA      ; Call the Windows API
+    
+    mov rcx, 0            ; UINT uExitCode = 0
+    call ExitProcess      ; Exit the program
+---
+To turn this into a program we need an assembler and a linker
+First assembler
+nasm -f win64 hello.asm -o hello.obj
+Second link
+link hello.obj /subsystem:windows /entry:main user32.lib kernel32.lib /out:hello.exe
+
+Let move deeper into the code it self.
+The register:
+General purpose registers: in the CPU, each core can have its own general purpose registers, which is it own storage space which is extremely fast. When doing certain task, the cpu will try to put data in there
+instead of memory because it a lot faster for cpu to access data in register when compare to memory. If the data is too large to fit in a register, a register will hold a pointer to the data so it can be accessed.
+
+
+
+
+
+
 
 
 
