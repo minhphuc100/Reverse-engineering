@@ -1,0 +1,21 @@
+Windows x64 Assembly
+
+Registers:
+Note: There are acctually two different syntaxes ( syntax style or call "Flavor") for assembly, intel and AT&T, i will focus on Intel for now. But keep note that AT&T is more commonly used for Linux (?)
+Both Intel and AT&T syntaxes are used to write instructions for the same underlying processor (like an x86 or x86-64 chip). 
+
+
+In a process of a c program, you may know that the compiler must convert it to assembly language so computer can understand.
+
+In windows, assembly file code can be:
+- Source code : Contain human readable assembly instruction
+Can be .asm, .s, .S, .inc
+
+- Compiled & Intermediate ext: when source code is processed by an assembler, it is saved into binary file to keep the instruction
+Can be .exe, .obj, .dll and .lst
+
+Special case .NET assemblies (?)
+
+
+
+
