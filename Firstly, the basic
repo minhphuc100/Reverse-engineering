@@ -54,6 +54,38 @@ General purpose registers: in the CPU, each core can have its own general purpos
 instead of memory because it a lot faster for cpu to access data in register when compare to memory. If the data is too large to fit in a register, a register will hold a pointer to the data so it can be accessed.
 
 
+There are 8 main general purpose registers
+
+RAX - Known as the accumulator register. Often used to store the return value of a function.
+RBX - Sometimes known as the base register, not to be confused with the base pointer. Sometimes used as a base pointer for memory access.
+RDX - Sometimes known as the data register.
+RCX - Sometimes known as the counter register. Used as a loop counter.
+RSI - Known as the source index. Used as the source pointer in string operations.
+RDI - Known as the destination index. Used as the destination pointer in string operations.
+RSP - The stack pointer. Holds the address of the top of the stack.
+RBP - The base pointer. Holds the address of the base (bottom) of the stack.
+
+Moreover, each register doesn't have to hold these type of data, but it gonna be extremely helpful when us and computer follow the rule to know where is value of a function went.
+There are additional registers r8 to r15 which are designed to be used by integer type values and don't have any special uses
+More info in microsoft.
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/x64-architecture#registers
+
+Register break down
+For code from older architecture still work on new CPU, the register can break downs from 64 to 32,16 or 8
+With register break downs, it also help to perform operations on smaller data types (like bytes) without needing to load a full 64-bit word, speeding up arithmetic and logical operations
+Optimized Compiler Usage: Compilers use register breakdown to efficiently allocate variables, reducing the need to access slow main memory
+
+RAX is 64 bits, the lower 32 bits can be referenced with EAX, and the lower 16 bits can be referenced with AX. 
+AX is broken down into two 8 bit portions. The high/upper 8 bits of AX can be referenced with AH. The lower 8 bits can be referenced with AL.
+
+Different data type
+To hold floating point value, we need other kind of registers, these registers include YMM0 to YMM15 (64-bit) and XMM0 to XMM15 (32-bit). 
+The XMM registers are the lower half of the YMM registers, similar to how EAX is the lower 32 bits of RAX.
+Something unique about these registers is that they can be treated as arrays. In other words, they can hold multiple values. 
+For example, YMM# registers are 256-bit wide each and can hold 4 64-bit values or 8 32-bit values. 
+Similarly, the XMM# registers are 128-bits wide and can hold 2 64-bit values or 4 32-bit values.
+Special instructions are needed to utilize these registers as vectors.
+
 
 
 
