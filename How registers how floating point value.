@@ -1,0 +1,13 @@
+In modern computers, a specialized register called a Floating-Point Register (FPR) is used to hold floating-point values.
+Unlike general-purpose registers that typically handle integers, these registers are part of the Floating-Point Unit (FPU), which is designed specifically for decimal and scientific math.
+
+Common Register Types:
+
+x86/x64 Architecture: Modern Intel and AMD processors use XMM, YMM, or ZMM registers. 
+These are large registers (128-bit to 512-bit) that can hold multiple floating-point values at once for faster processing.
+Which in starndard windows and amd64 linux architecture
+
+ARM: Uses specialized registers that can hold single (32-bit), double (64-bit), or extended precision values. Which in arm64 system (phone, ipad,...)
+
+
+both use IEEE 754
