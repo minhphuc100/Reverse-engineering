@@ -1,3 +1,9 @@
+Summary of What to Learn
+Windows x64 (MASM/NASM): Essential if you want to understand malware analysis or game modding on PCs.
+Linux AMD64 (NASM/Intel Syntax): Often considered the best "starting point" because the environment is very assembly-friendly.
+Linux ARM64: Critical for mobile development, IoT, and modern cloud servers.
+
+
 Windows x64 Assembly
 
 Registers:
@@ -87,7 +93,15 @@ Similarly, the XMM# registers are 128-bits wide and can hold 2 64-bit values or 
 Special instructions are needed to utilize these registers as vectors.
 
 
+Calling convention
+When calling a function, theoretically, you could pass parameter via register, stack or even on disk. However, you need to be sure the function know the order and location
+of each parameters you pass and value you get from it. 
+This isn't too big of a problem if you are using your own functions, but things would get messy when you start using libraries. 
+To solve this problem we have calling conventions that define how parameters are passed to a function, who allocates space for variables, and who cleans up the stack.
 
+Callee refers to the function being called (child), and the caller is the function making the call(parent).
+There are several different calling conventions including cdecl, syscall, stdcall, fastcall, and more. 
+We are focus on x64 Windows for simplicity, we will be working with x64 fastcall. ( amd64 and arm64 in linux is quiet different, like more "aggressive" type of call)
 
 
 
