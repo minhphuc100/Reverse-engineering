@@ -1,0 +1,27 @@
+In modern computers, a specialized register called a Floating-Point Register (FPR) is used to hold floating-point values.
+Unlike general-purpose registers that typically handle integers, these registers are part of the Floating-Point Unit (FPU), which is designed specifically for decimal and scientific math.
+
+Common Register Types:
+
+x86/x64 Architecture: Modern Intel and AMD processors use XMM, YMM, or ZMM registers. 
+These are large registers (128-bit to 512-bit) that can hold multiple floating-point values at once for faster processing.
+Which in starndard windows and amd64 linux architecture
+
+ARM: Uses specialized registers that can hold single (32-bit), double (64-bit), or extended precision values. Which in arm64 system (phone, ipad,...)
+
+
+both use IEEE 754
+
+Every IEEE 754 number is composed of three distinct fields: 
+
+Sign Bit: A single bit where 0 represents a positive number and 1 represents a negative number.
+Biased Exponent: Represents the power of 2 that the number is multiplied by. A "bias" is added to the actual exponent to avoid using a separate sign bit for negative powers.
+Mantissa (Significand): Represents the significant digits of the number. In "normalized" form, an implicit leading 1 is assumed and not stored, providing an extra bit of precision for free. 
+
+Common Formats
+Format |	Total Bits |	Exponent Bits |	Mantissa Bits |	Common Name
+Binary32	32	            8	                23	        Single Precision (float)
+Binary64	64	            11	              52	        Double Precision (double)
+Binary16	16	            5	                10	        Half Precision
+
+There are several different between AMD64 and ARM64 in calculating floating point value. But i going to save it for general different between AMD64 and ARM64
