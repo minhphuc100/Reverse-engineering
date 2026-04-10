@@ -103,7 +103,39 @@ Callee refers to the function being called (child), and the caller is the functi
 There are several different calling conventions including cdecl, syscall, stdcall, fastcall, and more. 
 We are focus on x64 Windows for simplicity, we will be working with x64 fastcall. ( amd64 and arm64 in linux is quiet different, like more "aggressive" type of call)
 
+Fastcall is the calling convention for x64 Windows. Windows uses a four-register fastcall calling convention by default. 
+Quick FYI, when talking about calling conventions you will hear about something called the "Application Binary Interface" (ABI). 
+The ABI defines various rules for programs such as calling conventions, parameter handling, and more.
 
+How does the x64 Windows calling convention work?
+
+The first four parameters are passed in registers, LEFT to RIGHT. 
+
+Parameters that are not floating-point values, such as integers, pointers, and chars, will be passed via RCX, RDX, R8, and R9 (in that order). 
+Floating-point parameters will be passed via XMM0, XMM1, XMM2, and XMM3 (in that order).
+
+If there is a mix of floating-point and integer values, they will still be passed via the register that corresponds to their position. 
+For example, func(1, 3.14, 6, 6.28) will pass the first parameter through RCX, the second through XMM1, the third through R8, and the last through XMM3.
+
+If the parameter being passed is too big to fit in a register then it is passed by reference (a pointer to the data in memory). 
+Parameters can be passed via any sized corresponding register. 
+
+For example, RCX, ECX, CX, CH, and CL can all be used for the first parameter. Any other parameters are pushed onto the stack, RIGHT to LEFT.
+
+There is always going to be space allocated on the stack for 4 parameters, even if there aren't any parameters. 
+This space isn't completely wasted because the compiler can, and often will, use it. 
+Usually, if it's a debug build, the compiler will put a copy of the parameters in the space. 
+On release builds, the compiler will use it for temporary or local variable storage.
+
+
+Here are some more rules of the calling convention:
+
+The base pointer (RBP) is saved when a function is called so it can be restored.
+A function's return value is passed via RAX if it's an integer, bool, char, etc., or XMM0 if it's a float or double.
+Member functions have an implicit first parameter for the "this" pointer. Because it's a pointer and it's the first parameter, it will be passed via RCX. This can be very useful to know.
+The caller is responsible for allocating space for parameters for the callee. The caller must always allocate space for 4 parameters even if no parameters are passed.
+The registers RAX, RCX, RDX, R8, R9, R10, R11, and XMM0-XMM5 are considered volatile and must be considered destroyed on function calls.
+The registers RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15, and XMM6-XMM15 are considered nonvolatile and should be saved and restored by a function that uses them.
 
 
 
