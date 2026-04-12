@@ -146,4 +146,68 @@ The registers RAX, RCX, RDX, R8, R9, R10, R11, and XMM0-XMM5 are considered vola
 The registers RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15, and XMM6-XMM15 are considered nonvolatile and should be saved and restored by a function that uses them.
 
 
+Instructions
+There are roughly 1,500 instructions, however, a majority of the instructions are not commonly used or they're just variations (such as MOV and MOVS).
+Just like in high-level programming, don't hesitate to look up something you don't know.
+
+In small example above,
+MOV RCX , 0
+MOV is an instructions, RCX is destination, and 0 is openrand
+
+Common instruction:
+MOV set value of dest from openrand
+LEA is short for load effective address, it is commonly used for computing addresses, but the big different between LEA and MOV is that LEA is not dereference
+
+
+In RBX, we are having the address of a
+LEA RBX , a
+if we use
+MOV RAX, RBX ; rax will get the address of a
+MOV RAX, [RBX]; this is dereference !!!, rax will get the value of the address inside rbx
+LEA RAX, [RBX] ; same as mov, but we can perform calculation in the bracket, like add or sub, which speed up the instruction
+
+in RBX, we have value 5
+MOV RBX, 5
+if we use
+MOV RAX, RBX ; RAX =5
+LEA RAX, RBX ; error
+LEA RAX, [RBX] ; the rax will have value 5, but we also can perform calculation in the bracket, like add or sub, But it does not change the CPU's condition flags (like the zero or carry flags).
+
+Push and pop: Stack is directly supported by cpu, have dedicated pointer RSP
+PUSH RAX ; it will push data inside RAX onto the stack, the register being pushed will keep it value
+POP RBX ; it will put data on top of the stack to the RAX
+
+
+Arithmetic:
+add rax, 1 ; add 1 to rax, can trigger flags like normal ( Zero flag, sign flag, overflow flag and carry flag )
+SUB rax, 1 ; sub 1 , same as add
+INC: increase 1
+inc RAX; increase value in RAX by one , can trigger flag but not carry flag
+DEC: decrease 1
+dec RAX; decrease value in rax by one , same as inc
+
+MUL-T ( Multiplication , shout out to ROR2)
+We have two kind of mul, MUL ( unsigned ) and IMUL ( signed )
+MOV RAX, 5
+MOV RBX, 10
+MUL RBX ; the mul-t is perform with RAX by default, which it is hard-coded inside the cpu,
+The value will be keep in RDX:RAX , the reason is when mul two 64 bits value, max value can get to 128 bit.
+Divide
+We also have two kinds of Divide, DIV and IDIV
+MOV RAX, 15
+MOV RBX, 20
+DIV RBX ; the divide is perform with RAX by default, which is also hard-coded inside the cpu,
+The value will be keep in RDX:RAX, but RAX will keep the Quotient (Result), while RDX is the remainder
+
+Noted: when perform Mul-t and divide, we need to make sure the value in rdx is not needed anymore
+Remainder divide is need some of your thought:
+
+Because the CPU expects a "double-wide" dividend (like RDX:RAX), you must ensure RDX is prepared before you run div.
+Unsigned (div): You usually need to clear RDX first (e.g., xor rdx, rdx) so it doesn't contain leftover "junk" that would ruin your math.
+Signed (idiv): You should use an instruction like cqo (Convert Quadword to Octword), which automatically fills RDX with the sign bits of RAX. 
+
+(Wait—did you know that if the quotient is too big to fit in RAX (for example, if you divide by a very small number like 1), the CPU will actually trigger a "divide error" and crash your program) ?
+
+
+
 
