@@ -153,11 +153,14 @@ Just like in high-level programming, don't hesitate to look up something you don
 In small example above,
 MOV RCX , 0
 MOV is an instructions, RCX is destination, and 0 is openrand
-
+We can write value from register to memory destination
+Reg to Mem :	mov [address], rax
+mov [var], rax
+But you cannot move data directly from memory to memory, which mean:
+MOV [address] , [rbx] ; if rbx is having memory address, it is invalid, cause complication error, (simple explain is that : in x86-64 architecture, a mov can only have at most one memory openrand )
 Common instruction:
 MOV set value of dest from openrand
 LEA is short for load effective address, it is commonly used for computing addresses, but the big different between LEA and MOV is that LEA is not dereference
-
 
 In RBX, we are having the address of a
 LEA RBX , a
@@ -206,7 +209,49 @@ Because the CPU expects a "double-wide" dividend (like RDX:RAX), you must ensure
 Unsigned (div): You usually need to clear RDX first (e.g., xor rdx, rdx) so it doesn't contain leftover "junk" that would ruin your math.
 Signed (idiv): You should use an instruction like cqo (Convert Quadword to Octword), which automatically fills RDX with the sign bits of RAX. 
 
-(Wait—did you know that if the quotient is too big to fit in RAX (for example, if you divide by a very small number like 1), the CPU will actually trigger a "divide error" and crash your program) ?
+( there are also divide and mul-t with floating point value, they have several differences ! ) ?
+
+Flow control:
+To understand flow control, we need to know:
+RIP : register instruction pointer, is a important register, you never manually mov value into it, it holds the address of next instruction the cpu will executed
+-- Normally, the CPU just adds a few bytes to RIP after every instruction to move to the next line.
+(
+Why :
+Sequential Code Flow: Most code is executed in order (top to bottom). Automatically adding the instruction length to RIP is the most efficient way to proceed to the next line without needing a specific "jump to next line" instruction.
+Variable Instruction Lengths: x86-64 instructions are not a fixed size; they can vary in length. The CPU decodes the current instruction first to determine its size, then adds that specific length to RIP.
+Performance (Pipelining): Modern CPUs use pipelines to fetch multiple instructions ahead of time. Knowing the next address (RIP + length) allows the processor to fetch subsequent instructions from the cache while the current one is still executing.
+Exceptions (Control Flow): If the instruction is a jump, branch, or function call, the CPU overrides this default increment and sets the RIP to a new address. Otherwise, it defaults to the next sequential address.
+Position Independent Code (PIC): In 64-bit mode, the CPU uses "RIP-relative addressing." The instructions use the current RIP as a base address to find data, which allows code to run regardless of where it is loaded in memory.
+)
+-- Instructions like ret, jmp, and call are special because they are the only ways to "force" a new value into the RIP to change where the code is running. ( which is flow control )
+
+The Stack (Your "Last-In, First-Out" Scratchpad)
+The stack is a dedicated region of memory used to temporarily store data. Think of it like a physical stack of plates: 
+push rax: You put a "plate" (the value in rax) on top. This moves the RSP (Stack Pointer) register down to a lower memory address.
+pop rax: You take the top plate off. This moves the RSP register up. 
+
+3. How call and ret Work Together
+These two instructions are just a "polite" way to jump to a function and come back. 
+
+call my_function:
+It pushes the address of the very next line (the "return address") onto the stack.
+It then jumps (changes RIP) to my_function.
+ret:
+It pops whatever is on top of the stack and puts it directly into the RIP.
+The CPU then looks at RIP and starts executing code from that new address.
+
+RIP-Relative Addressing ([rel secret_code])
+In 64-bit Windows, programs can be loaded into different parts of memory every time they run (a security feature called ASLR). 
+
+Because the absolute address of secret_code might change, we use RIP-relative addressing.
+lea rax, [rel secret_code]: This tells the assembler: "Calculate where secret_code is relative to where we are right now (the RIP) and put that address into rax"
+
+
+RET is short for return, however there are two kinds of ret !
+mov rax ,10 ret ; return 10
+and 
+ret;
+
 
 
 
