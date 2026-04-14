@@ -234,7 +234,7 @@ It then jumps (changes RIP) to my_function location.
 then when it ret:
 It pops whatever is on top of the stack and puts it directly into the RIP.
 The CPU then looks at RIP and starts executing code from that new address.
-
+--
 RIP-Relative Addressing
 In 64-bit Windows, programs can be loaded into different parts of memory every time they run (a security feature called ASLR). 
 Because the absolute address of secret_code might change, we use RIP-relative addressing.
@@ -245,6 +245,7 @@ rel: A keyword (often used in NASM) that forces Position-Independent Code (PIC) 
 RET is short for return, but it not exactly like return in higher language (i confused with it in tryhackme ( which said it is like return 10) so i want to explain clearly for you)
 
 To explain ret, let look at this small example
+First, returning from a Procedure: 
 ; --- MAIN PROGRAM ---
 main PROC
     mov rcx, 5          ; Put 5 in RCX (Standard 1st argument in Windows)
@@ -265,6 +266,22 @@ SquareIt PROC
                         ;    jumps back to the instruction after the 'call'.
 SquareIt ENDP
 
+The different is, it is not return 25 (value in rax), it pops whatever is on top of the stack and puts it directly into the RIP, which is the address of original caller of this function
+and value in rax is kept during this process and can be processed by original function ( which is save it to result)
 
+So in this example, we should also explain call, but as explain above, it pushes the address of the very next line (the "return address") onto the stack.
+then jumps (changes RIP) to SquareIt location.
+Which then can be ret to go back to the original caller !
 
+Noted: Because flow control is also involving in manipulating stack, we should be mindful when push or pop, or it will mess up the flow of your proggram.
+--
+Second: Stack Cleanup: While the standard Windows x64 Calling Convention typically requires the caller to clean up the stack, ret n can be used to pop an additional n bytes from the stack upon returning.
+
+--
+Third: Tail Call Optimization: Instead of calling a function and then returning, a programmer might use jmp to another function. The second function's ret will then return directly to the original caller, saving stack space and a few cycles.
+
+--
+Fourth: Implementing "Return Oriented Programming" (ROP): In security contexts, ret instructions (often called "gadgets") are used to chain together small snippets of existing code to execute arbitrary logic. 
+
+--
 
