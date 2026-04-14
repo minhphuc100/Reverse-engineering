@@ -225,33 +225,45 @@ Position Independent Code (PIC): In 64-bit mode, the CPU uses "RIP-relative addr
 )
 -- Instructions like ret, jmp, and call are special because they are the only ways to "force" a new value into the RIP to change where the code is running. ( which is flow control )
 
-The Stack (Your "Last-In, First-Out" Scratchpad)
-The stack is a dedicated region of memory used to temporarily store data. Think of it like a physical stack of plates: 
-push rax: You put a "plate" (the value in rax) on top. This moves the RSP (Stack Pointer) register down to a lower memory address.
-pop rax: You take the top plate off. This moves the RSP register up. 
-
-3. How call and ret Work Together
+How call and ret Work Together
 These two instructions are just a "polite" way to jump to a function and come back. 
 
-call my_function:
+when it start to call my_function:
 It pushes the address of the very next line (the "return address") onto the stack.
-It then jumps (changes RIP) to my_function.
-ret:
+It then jumps (changes RIP) to my_function location.
+then when it ret:
 It pops whatever is on top of the stack and puts it directly into the RIP.
 The CPU then looks at RIP and starts executing code from that new address.
 
-RIP-Relative Addressing ([rel secret_code])
+RIP-Relative Addressing
 In 64-bit Windows, programs can be loaded into different parts of memory every time they run (a security feature called ASLR). 
-
 Because the absolute address of secret_code might change, we use RIP-relative addressing.
-lea rax, [rel secret_code]: This tells the assembler: "Calculate where secret_code is relative to where we are right now (the RIP) and put that address into rax"
+lea rax, [rel secret_code]: 
+rel: A keyword (often used in NASM) that forces Position-Independent Code (PIC) by using an offset relative to the current Instruction Pointer (RIP).
+-> This tells the assembler: "Calculate where secret_code is relative to where we are right now (the RIP) and put that address into rax"
+------
+RET is short for return, but it not exactly like return in higher language (i confused with it in tryhackme ( which said it is like return 10) so i want to explain clearly for you)
 
+To explain ret, let look at this small example
+; --- MAIN PROGRAM ---
+main PROC
+    mov rcx, 5          ; Put 5 in RCX (Standard 1st argument in Windows)
+    
+    call SquareIt       ; 1. Pushes the address of the next line (mov [res], rax) 
+                        ;    onto the stack, then jumps to 'SquareIt'.
 
-RET is short for return, however there are two kinds of ret !
-mov rax ,10 ret ; return 10
-and 
-ret;
+    mov [result], rax   ; 4. Execution resumes here. RAX now contains 25.
+    ret                 ; Exit main
+main ENDP
 
+; --- SUBROUTINE ---
+SquareIt PROC
+    mov rax, rcx        ; Copy input (5) to RAX
+    imul rax, rax       ; RAX = 5 * 5 = 25
+    
+    ret                 ; 3. Pops the return address from the stack and 
+                        ;    jumps back to the instruction after the 'call'.
+SquareIt ENDP
 
 
 
