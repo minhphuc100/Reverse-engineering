@@ -301,3 +301,5 @@ Fourth: Implementing "Return Oriented Programming" (ROP): In security contexts, 
 
 --
 
+Remind: May be i should create dedicated txt file of stack and heap in assembly. (later)
+
