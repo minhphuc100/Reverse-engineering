@@ -160,14 +160,18 @@ But you cannot move data directly from memory to memory, which mean:
 MOV [address] , [rbx] ; if rbx is having memory address, it is invalid, cause complication error, (simple explain is that : in x86-64 architecture, a mov can only have at most one memory openrand )
 Common instruction:
 MOV set value of dest from openrand
+
 LEA is short for load effective address, it is commonly used for computing addresses, but the big different between LEA and MOV is that LEA is not dereference
+LEA register, [source]
 
 In RBX, we are having the address of a
 LEA RBX , a
 if we use
 MOV RAX, RBX ; rax will get the address of a
-MOV RAX, [RBX]; this is dereference !!!, rax will get the value of the address inside rbx
-LEA RAX, [RBX] ; same as mov, but we can perform calculation in the bracket, like add or sub, which speed up the instruction
+MOV RAX, [RBX]; this is dereference !!!, rax will get the value of the address inside rbx. If we perform calculation here, it will do it with the address, not the value of that address !
+LEA RAX, [RBX] ; same as mov, but we can perform calculation in the bracket, like add or sub, which speed up the instruction 
+
+
 
 in RBX, we have value 5
 MOV RBX, 5
@@ -180,6 +184,7 @@ Push and pop: Stack is directly supported by cpu, have dedicated pointer RSP
 PUSH RAX ; it will push data inside RAX onto the stack, the register being pushed will keep it value
 POP RBX ; it will put data on top of the stack to the RAX
 
+MOV [RAX], [RBX]; is error ( almost same as LEA RAX, RBX )
 
 Arithmetic:
 add rax, 1 ; add 1 to rax, can trigger flags like normal ( Zero flag, sign flag, overflow flag and carry flag )
@@ -244,7 +249,7 @@ rel: A keyword (often used in NASM) that forces Position-Independent Code (PIC) 
 ------
 RET is short for return, but it not exactly like return in higher language (i confused with it in tryhackme ( which said it is like return 10) so i want to explain clearly for you)
 
-To explain ret, let look at this small example
+To explain ret further, let look at this small example
 First, returning from a Procedure: 
 ; --- MAIN PROGRAM ---
 main PROC
@@ -267,7 +272,7 @@ SquareIt PROC
 SquareIt ENDP
 
 The different is, it is not return 25 (value in rax), it pops whatever is on top of the stack and puts it directly into the RIP, which is the address of original caller of this function
-and value in rax is kept during this process and can be processed by original function ( which is save it to result)
+and value in rax is kept during this process and can be processed by original function (which in this example, is saved to result)
 
 So in this example, we should also explain call, but as explain above, it pushes the address of the very next line (the "return address") onto the stack.
 then jumps (changes RIP) to SquareIt location.
@@ -287,19 +292,38 @@ inside a function, what is this mean
 This two instruction is manipulating the stacks
 The sub rsp, 28h is adding 'empty' 40 bits space to the stack (rs pointer go down). But why 40 bits you ask, that because:
 after call a function, address of next instruction after the call in main is push on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses.
-there space (shadow space) can be use to be additional temporary space to save value in a function, to save register arguments (RCX,RDX,R8 and R9). for the function, or can be retrieved from the main.
+there space (shadow space) can be use to be additional temporary space to save value in a function, to save register arguments. for the function, or can be retrieved from the main.
 after that,
 add rsp 28h ; will let us rsp back to the address of next instruction after the call.
 
 -> so the main different is the space to keep the input value for the function.
+-> To have more understanding, look at calling conventions - fastcall too!
 
---
-Third: Tail Call Optimization: Instead of calling a function and then returning, a programmer might use jmp to another function. The second function's ret will then return directly to the original caller, saving stack space and a few cycles.
 
---
 Fourth: Implementing "Return Oriented Programming" (ROP): In security contexts, ret instructions (often called "gadgets") are used to chain together small snippets of existing code to execute arbitrary logic. 
 
 --
+
+CMP - compare
+compare two openrands and trigger flags base on the result, like
+mov rax, 5
+cmp rax, 5 ; will set the zf (zero-flag to 1) because it equal
+
+Jump - There are many kind of jump, and each type is trigger base on the flags are currently set.
+Like:
+JNE will jump if the comparison is not equal, and JLE jumps if less than or equal, JG jumps if greater, etc.
+-- example
+mov RAX, 5
+cmp RAX, 5
+jne 5 ; Jump to line 5 (ret) if not equal.
+mov RBX, 10
+ret
+
+NOP -  do nothing, it is typically used for padding because some parts of code like to be on specific boundaries such as 16-bit or 32-bit boundaries.
+
+
+
+
 
 Remind: May be i should create dedicated txt file of stack and heap in assembly. (later)
 
