@@ -275,7 +275,23 @@ Which then can be ret to go back to the original caller !
 
 Noted: Because flow control is also involving in manipulating stack, we should be mindful when push or pop, or it will mess up the flow of your proggram.
 --
-Second: Stack Cleanup: While the standard Windows x64 Calling Convention typically requires the caller to clean up the stack, ret n can be used to pop an additional n bytes from the stack upon returning.
+Second: Stack Cleanup: While the standard Windows x64 Calling Convention typically requires the caller to clean up the stack, ret n can be used to pop an additional n bytes from the stack upon returning ( the stack will increase in size when sub, decrease in size when add more space to it) so in this.
+ret n mean Pops the return address to rip AND then adds n to RSP
+
+sometimes you can see
+
+sub rsp, 28h
+and
+add rsp, 28h
+inside a function, what is this mean
+This two instruction is manipulating the stacks
+The sub rsp, 28h is adding 'empty' 40 bits space to the stack (rs pointer go down). But why 40 bits you ask, that because:
+after call a function, address of next instruction after the call in main is push on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses.
+there space (shadow space) can be use to be additional temporary space to save value in a function, to save register arguments (RCX,RDX,R8 and R9). for the function, or can be retrieved from the main.
+after that,
+add rsp 28h ; will let us rsp back to the address of next instruction after the call.
+
+-> so the main different is the space to keep the input value for the function.
 
 --
 Third: Tail Call Optimization: Instead of calling a function and then returning, a programmer might use jmp to another function. The second function's ret will then return directly to the original caller, saving stack space and a few cycles.
