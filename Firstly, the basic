@@ -299,9 +299,6 @@ add rsp 28h ; will let us rsp back to the address of next instruction after the 
 -> so the main different is the space to keep the input value for the function.
 -> To have more understanding, look at calling conventions - fastcall too!
 
-
-Fourth: Implementing "Return Oriented Programming" (ROP): In security contexts, ret instructions (often called "gadgets") are used to chain together small snippets of existing code to execute arbitrary logic. 
-
 --
 
 CMP - compare
@@ -321,6 +318,38 @@ ret
 
 NOP -  do nothing, it is typically used for padding because some parts of code like to be on specific boundaries such as 16-bit or 32-bit boundaries.
 
+Zero extension
+MOV RAX, EBX
+If we move 32 last bits of RBX , the upper 32 bits of RAX will be kept, so if you want to also set the upper 32-bits to zero
+MOVZX RAX, EBX
+
+JA (jump if above) and JG ( jump if greater) , JB (jump if below) and JL ( jump if less)
+When compare, we need to consider it is signed or not, so JA and JB is for unsigned, JG and JL for signed
+Example
+mov eax, -1     ; In memory, this is 0xFFFFFFFF
+mov ebx, 1      ; In memory, this is 0x00000001
+then
+cmp eax, ebx 
+If:
+ja some_address ; this will jump
+But if:
+jg some_address ; this will not jump
+
+Flags are used to show info of the last operation or comparation, there are actually a flag register (16 bits) , you can look up in wiki
+
+Here are the flags you should know. Note that when I say a "flag is set" I mean the flag is set to 1 which is true/on. 0 is false/off.
+
+Zero Flag (ZF) - Set if the result of an operation is zero. Not set if the result of an operation is not zero.
+Carry Flag (CF) - Set if the last unsigned arithmetic operation carried (addition) or borrowed (subtraction) a bit beyond the register. It's also set when an operation would be negative if it wasn't for the operation being unsigned.
+Overflow Flag (OF) - Set if a signed arithmetic operation is too big for the register to contain.
+Sign Flag (SF) - Set if the result of an operation is negative.
+Adjust/Auxiliary Flag (AF) - Same as the carry flag but for Binary Coded Decimal (BCD) operations.
+Parity Flag (PF) - Set to 1 if the number of bits set in the last 8 bits is even. (10110100, PF=1; 10110101, PF=0)
+Trap Flag (TF) - Allows for single-stepping of programs.
+
+Note: In overflow addition, it will set both overflow flag and sign flag
+
+Windows x64 calling convention
 
 
 
