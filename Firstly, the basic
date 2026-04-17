@@ -350,8 +350,66 @@ Trap Flag (TF) - Allows for single-stepping of programs.
 Note: In overflow addition, it will set both overflow flag and sign flag
 
 Windows x64 calling convention
+Fastcall is the calling convention for x64 Windows. Windows uses a four-register fastcall calling convention by default. Quick FYI, when talking about calling conventions you will hear about something called the "Application Binary Interface" (ABI). The ABI defines various rules for programs such as calling conventions, parameter handling, and more.
 
+How does the x64 Windows calling convention work?
+- The first four parameters are passed in registers, LEFT to RIGHT. Parameters that are not floating-point values, such as integers, pointers, and chars, will be passed via RCX, RDX, R8, and R9 (in that order). Floating-point parameters will be passed via XMM0, XMM1, XMM2, and XMM3 (in that order).
+- If there is a mix of floating-point and integer values, they will still be passed via the register that corresponds to their position. For example, func(1, 3.14, 6, 6.28) will pass the first parameter through RCX, the second through XMM1, the third through R8, and the last through XMM3.
+- If the parameter being passed is too big to fit in a register then it is passed by reference (a pointer to the data in memory). Parameters can be passed via any sized corresponding register. For example, RCX, ECX, CX, CH, and CL can all be used for the first parameter. Any other parameters are pushed onto the stack, RIGHT to LEFT.
 
+There is always going to be space allocated on the stack for 4 parameters, even if there aren't any parameters. This space isn't completely wasted because the compiler can, and often will, use it. 
+Usually, if it's a debug build, the compiler will put a copy of the parameters in the space. On release builds, the compiler will use it for temporary or local variable storage.
+
+Here are some more rules of the calling convention:
+
+The base pointer (RBP) is saved when a function is called so it can be restored.
+- A function's return value is passed via RAX if it's an integer, bool, char, etc., or XMM0 if it's a float or double.
+- Member functions have an implicit first parameter for the "this" pointer. Because it's a pointer and it's the first parameter, it will be passed via RCX. This can be very useful to know.
+- The caller is responsible for allocating space for parameters for the callee. The caller must always allocate space for 4 parameters even if no parameters are passed.
+- The registers RAX, RCX, RDX, R8, R9, R10, R11, and XMM0-XMM5 are considered volatile and must be considered destroyed on function calls.
+- The registers RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15, and XMM6-XMM15 are considered nonvolatile and should be saved and restored by a function that uses them.
+
+From here: But this is kind of different though, but indeed it can help with your understanding.
+Stack Access
+Data on the stack such as local variables and function parameters are often accessed with RBP or RSP. On x64 it's extremely common to see RSP used instead of RBP to access parameters. Remember that the first four parameters, even though they are passed via registers, still have space reserved for them on the stack. This space is going to be 32 bytes (0x20), 8 bytes for each of the 4 registers. Remember this because at some point you will see this offset when accessing parameters passed on the stack.
+
+1-4 Parameters:
+Arguments will be pushed via their respective registers, left to right. The compiler will likely use RSP+0x0 to RSP+0x18 for other purposes.
+More Than 4 Parameters:
+The first four arguments are passed via registers, left to right, and the rest are pushed onto the stack starting at offset RSP+0x20, right to left. This makes RSP+0x20 the fifth argument and RSP+0x28.
+Here is a very simple example where the numbers 1 to 8 are passed from one function to another function. Notice the order they are put in.
+For example:
+function(1,2,3,4,5,6,7,8)
+MOV RCX 0x1 ; Going left to right.
+MOV RDX 0x2
+MOV R8 0x3
+MOV R9 0x4
+PUSH 0x8 ; Now going right to left.
+PUSH 0x7
+PUSH 0x6
+PUSH 0x5
+Then Call function
+( in tryhackme "In this case, the stack parameters should be accessed via RSP+0x20 to RSP+0x28." ) (let's explain this)
+...
+(um, i think i am confuse right know, but i still want to explain it, but i think tryhackme has been wrong all the way !)
+so ...
+
+--> I came up with a conclusion after take a look at x64 calling convention of microsoft, we should look at each instruction to see what does it do, in tryhackme, the stack parameters should be accessed via RSP+0x20 to RSP+0x28 is likely to be wrong if we finished like it
+That because we doesn't push r9,r8,rdx and rcx before the call function, so it would be like
+0x8
+0x7
+0x6
+0x5
+return_address (rsp)
+and done, and it is indeed not "the stack parameters should be accessed via RSP+0x20 to RSP+0x28" but rather shorter addresses and we still can call it.
+*But , tryhackme will be correct if in the function, we sub the rsp to move rsp down a little bit !
+
+And it is still correct that more than 4 parameters, we push them into the stack.
+*** Or tryhackme has been simplyfying thing for us, there is a rule in ABI:
+If caller is about to call a function, they must responsible for creating a shadow space for it, but, it is not automatically done with only call function like tryhackme did for us
+we must:
+sub rsp,28h ;before we call a function to create shadow space for them !
+then it would indeed can be look like that.
 
 
 Remind: May be i should create dedicated txt file of stack and heap in assembly. (later)
