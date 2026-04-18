@@ -289,7 +289,7 @@ sub rsp, 28h
 and
 add rsp, 28h
 inside a function, what is this mean
-This two instruction is manipulating the stacks
+This two instruction is manipulating the stacks (to manipulating the flow of instruction)
 The sub rsp, 28h is adding 'empty' 40 bits space to the stack (rs pointer go down). But why 40 bits you ask, that because:
 after call a function, address of next instruction after the call in main is push on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses.
 there space (shadow space) can be use to be additional temporary space to save value in a function, to save register arguments. for the function, or can be retrieved from the main.
