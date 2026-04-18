@@ -291,7 +291,7 @@ add rsp, 28h
 inside a function, what is this mean
 This two instruction is manipulating the stacks (to manipulating the flow of instruction)
 The sub rsp, 28h is adding 'empty' 40 bits space to the stack (rs pointer go down). But why 40 bits you ask, that because:
-after call a function, address of next instruction after the call in main is push on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses.
+before call a function, address of next instruction after the call in main is pushed on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses.
 there space (shadow space) can be use to be additional temporary space to save value in a function, to save register arguments. for the function, or can be retrieved from the main.
 after that,
 add rsp 28h ; will let us rsp back to the address of next instruction after the call.
@@ -411,6 +411,34 @@ we must:
 sub rsp,28h ;before we call a function to create shadow space for them !
 then it would indeed can be look like that.
 
+Memory layout:
+Even though we have learn a little about stack, but you may don't know how the whole memory look like.
 
+There are different segments/section in which are stored in memory
+
+- Stack - Holds non-static local variables. Discussed more in-depth soon.
+- Heap - Contains dynamically allocated data that can be uninitialized at first.
+- .data - Contains global and static data initialized to a non-zero value.
+- .bss - Contains global and static data that is uninitialized or initialized to zero.
+- .text - Contains the code of the program.
+*This is extremely simplified*
+0x7FFFFFFF              Kernel space
+                        Free space
+                        Program image
+                        Process environment blocks
+                        Thread environment blocks 
+                        Heap (Grow upward/increase )
+                        Stack (Grow downward/decrease)
+0x00000000
+***
+Important:
+The diagram above shows the direction variables (and any named data, even structures) are put into or taken out of memory.
+The actual data is put into memory differently. This is why stack diagrams vary so much. 
+You'll often see stack diagrams with the stack and heap growing towards each other or high memory addresses at the top. I will explain more later.
+The diagram I'm showing is the most relevant for reverse engineering. Low addresses being at the top is also the most realistic depiction.
+
+
+
+***
 Remind: May be i should create dedicated txt file of stack and heap in assembly. (later)
 
