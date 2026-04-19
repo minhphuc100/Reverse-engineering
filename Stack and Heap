@@ -1,1 +1,56 @@
+Stack and heap are two distinct areas of RAM, and provide different characteristic.
 
+Stack Memory (Local & Fast)
+Purpose: Stores local variables, function parameters, and return addresses.
+Access: Very fast access, cache-friendly.
+Lifespan: Data is created when a function is called and automatically deleted when it returns. ( This is about stack frame )
+Organization: Strict LIFO structure (like a pile of books).
+
+Heap Memory (Dynamic & Flexible) 
+Purpose: Stores objects, arrays, and data that require a longer lifespan or dynamic sizing (e.g., new objects in Java/C++).
+Access: Slower than the stack.
+Lifespan: Data exists until it is explicitly freed (like free in C) or removed by a garbage collector.
+Organization: No strict order, dispersed throughout memory (can lead to fragmentation).
+
+Stack frame
+
+When call a function, it actualy create a new stack frame ( shadow space, etc and it is not create by a call, you know, as explain in Last file.) . And here, we gonna dive deeper into this !
+There are two register, RSP ( had been talked about in first file ), and RBP (register base pointer )
+
+Feature 	        RSP (Stack Pointer)                        	RBP (Base Pointer)
+Primary Role	    Tracks the active top of the stack.	        Defines a fixed base for the current frame.
+Movement	        Changes frequently (PUSH/POP/CALL).	        Usually stays fixed during function execution.
+Usage	            Required for hardware stack operations.	    Optional (often omitted for optimization).
+Addressing	      [rsp + offset] (offsets can change).	      [rbp - offset] (offsets remain constant).
+
+The frame layout
+
+                Caller Frame
+                Shadow space
+                Return address (8 bit)
+                Saved RBP
+                Local Variables
+                Saved registers
+                RSP ( current top )
+
+Memory Address	Data Item	Who is Responsible?	Purpose
+Higher	Arg 5, 6, ...	Caller	Arguments that didn't fit in registers.
+Shadow Space (32 bytes)	Caller	Space for the callee to save RCX, RDX, R8, R9.
+Return Address (8 bytes)	call Instruction	Where the CPU goes after ret.
+Saved RBP (8 bytes)	Callee (Prologue)	Preserves the caller's frame pointer (optional).
+Local Variables	Callee (Prologue)	Storage for internal function data.
+Saved Registers	Callee (Prologue)	Preserves non-volatile registers like RBX, RSI.
+Lower	(Current RSP)	—	The "top" of the stack.
+
+
+
+Remind :16-Byte Alignment: On x64, the stack pointer (RSP) must be 16-byte aligned before making a CALL to another function. 
+Since the CALL instruction pushes an 8-byte return address, the stack is usually 8-byte misaligned when a function begins its execution. 
+
+But the saved RBP is 8 bit, so it is exactly 16 bit aligned
+But because RBP is optional, 
+
+
+
+***
+what kind of data is saved into which area inside memory 
