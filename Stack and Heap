@@ -25,22 +25,15 @@ Addressing	      [rsp + offset] (offsets can change).	      [rbp - offset] (offs
 
 The frame layout
 
-                Caller Frame
-                Shadow space
-                Return address (8 bit)
-                Saved RBP
-                Local Variables
-                Saved registers
-                RSP ( current top )
 
-Memory Address	Data Item	Who is Responsible?	Purpose
-Higher	Arg 5, 6, ...	Caller	Arguments that didn't fit in registers.
-Shadow Space (32 bytes)	Caller	Space for the callee to save RCX, RDX, R8, R9.
-Return Address (8 bytes)	call Instruction	Where the CPU goes after ret.
-Saved RBP (8 bytes)	Callee (Prologue)	Preserves the caller's frame pointer (optional).
-Local Variables	Callee (Prologue)	Storage for internal function data.
-Saved Registers	Callee (Prologue)	Preserves non-volatile registers like RBX, RSI.
-Lower	(Current RSP)	—	The "top" of the stack.
+Memory Address	            Data Item	                  Who is Responsible?	            Purpose
+Higher	                    Arg 5, 6, ...              	Caller	                        Arguments that didn't fit in registers.
+                            Shadow Space (32 bytes)	    Caller	                        Space for the callee to save RCX, RDX, R8, R9.
+                            Return Address (8 bytes)	  call Instruction	              Where the CPU goes after ret.
+                            Saved RBP (8 bytes)	        Callee (Prologue)	              Preserves the caller's frame pointer (optional).
+                            Local Variables            	Callee (Prologue)	              Storage for internal function data.
+                            Saved Registers	            Callee (Prologue)              	Preserves non-volatile registers like RBX, RSI.
+                            Lower                                                      	(Current RSP)	—	The "top" of the stack.
 
 
 
@@ -49,6 +42,9 @@ Since the CALL instruction pushes an 8-byte return address, the stack is usually
 
 But the saved RBP is 8 bit, so it is exactly 16 bit aligned
 But because RBP is optional, 
+That why, sometimes we see sub rsp, 28h and add rsp, 28h ( 40 bits)
+( if we use rbp, we still need to sub 32 bits before call, then saved the rbp)
+
 
 
 
