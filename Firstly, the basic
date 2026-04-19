@@ -20,9 +20,9 @@ Can be .asm, .s, .S, .inc
 - Compiled & Intermediate ext: when source code is processed by an assembler, it is saved into binary file to keep the instruction
 Can be .exe, .obj, .dll and .lst
 
-Special case .NET assemblies (?)
+Special case .NET assemblies
 
-Small example:
+Small example: ( but i haven't try it on myy pc, maybe i should try later ! )
 ---
 nasm
 ; hello.asm - 64-bit Windows Hello World (NASM)
@@ -437,8 +437,24 @@ The actual data is put into memory differently. This is why stack diagrams vary 
 You'll often see stack diagrams with the stack and heap growing towards each other or high memory addresses at the top. I will explain more later.
 The diagram I'm showing is the most relevant for reverse engineering. Low addresses being at the top is also the most realistic depiction.
 
+Stack : Area in memory that can be used quickly for static data allocation. Imagine the stack with low addresses at the top and high addresses at the bottom. This is identical to a normal numerical list. 
+Data is read and written as "last-in-first-out" (LIFO).When data is pushed onto the stack, the stack grows up, towards lower memory addresses. When you remove a piece of data off the top of the stack you pop it off the stack. When data is popped off the stack, the stack shrinks down, towards higher addresses. 
 
+Heap : Similar to the stack but used for dynamic allocation and it's a little slower to access. The heap is typically used for data that is dynamic (changing or unpredictable).
+Things such as structures and user input might be stored on the heap. If the size of the data isn't known at compile-time, it's usually stored on the heap. When you add data to the heap it grows towards higher addresses.
+
+Program Image : This is the program/executable loaded into memory. On Windows, this is typically a Portable Executable (PE).
+
+Don't worry too much about the TEB and PEB for now. This is just a brief introduction to them.
+
+TEB - The Thread Environment Block (TEB) stores information about the currently running thread(s).
+PEB - The Process Environment Block (PEB) stores information about the process and the loaded modules. One piece of information the PEB contains is "BeingDebugged" which can be used to determine if the current process is being debugged.
+PEB Structure Layout: https://docs.microsoft.com/en-us/windows/win32/api/winternl/ns-winternl-peb
+
+Next gonna be about IDA 9.2 free.
+Remember to check out the Stack and heap for data storage
 
 ***
-Remind: May be i should create dedicated txt file of stack and heap in assembly. (later)
-
+But keep note that AT&T is more commonly used for Linux (?) ** what is AT&T ? 
+Special case .NET assemblies (?) ** What is .NET assemblies ?
+TEB and PEB ?
