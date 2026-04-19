@@ -297,7 +297,7 @@ after that,
 add rsp 28h ; will let us rsp back to the address of next instruction after the call.
 
 -> so the main different is the space to keep the input value for the function.
--> To have more understanding, look at calling conventions - fastcall too!
+-> To have more understanding, look at calling conventions - fastcall and Stack and heap too!
 
 --
 
@@ -362,9 +362,9 @@ Usually, if it's a debug build, the compiler will put a copy of the parameters i
 
 Here are some more rules of the calling convention:
 
-The base pointer (RBP) is saved when a function is called so it can be restored.
+- The base pointer (RBP) is saved when a function is called so it can be restored ? ****** !!!!!!
 - A function's return value is passed via RAX if it's an integer, bool, char, etc., or XMM0 if it's a float or double.
-- Member functions have an implicit first parameter for the "this" pointer. Because it's a pointer and it's the first parameter, it will be passed via RCX. This can be very useful to know.
+- Member functions have an implicit first parameter for the "this" pointer. Because it's a pointer and it's the first parameter, it will be passed via RCX.
 - The caller is responsible for allocating space for parameters for the callee. The caller must always allocate space for 4 parameters even if no parameters are passed.
 - The registers RAX, RCX, RDX, R8, R9, R10, R11, and XMM0-XMM5 are considered volatile and must be considered destroyed on function calls.
 - The registers RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15, and XMM6-XMM15 are considered nonvolatile and should be saved and restored by a function that uses them.
@@ -421,6 +421,7 @@ There are different segments/section in which are stored in memory
 - .data - Contains global and static data initialized to a non-zero value.
 - .bss - Contains global and static data that is uninitialized or initialized to zero.
 - .text - Contains the code of the program.
+
 *This is extremely simplified*
 0x7FFFFFFF              Kernel space
                         Free space
