@@ -288,15 +288,18 @@ sometimes you can see
 sub rsp, 28h
 and
 add rsp, 28h
-inside a function, what is this mean
+Before a function, what is this mean
 This two instruction is manipulating the stacks (to manipulating the flow of instruction)
 The sub rsp, 28h is adding 'empty' 40 bits space to the stack (rs pointer go down). But why 40 bits you ask, that because:
-before call a function, address of next instruction after the call in main is pushed on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses.
-there space (shadow space) can be use to be additional temporary space to save value in a function, to save register arguments. for the function, or can be retrieved from the main.
-after that,
-add rsp 28h ; will let us rsp back to the address of next instruction after the call.
+before call a function, address of next instruction ( return address) after the call in main is pushed on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses. ( ABI rule)
+there space (shadow space) can be use to be additional temporary space to save value from a function, to save register arguments, etc
+add rsp 28h ; will let us rsp back to the address of next instruction.
+Layout
+older address
+shadow space
+return address
+newer address
 
--> so the main different is the space to keep the input value for the function.
 -> To have more understanding, look at calling conventions - fastcall and Stack and heap too!
 
 --
