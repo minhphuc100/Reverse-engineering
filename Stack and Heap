@@ -45,8 +45,40 @@ But because RBP is optional,
 That why, sometimes we see sub rsp, 28h and add rsp, 28h ( 40 bits)
 ( if we use rbp, we still need to sub 32 bits before call, then saved the rbp)
 
+Heap: Is Warehouse in memory, store all kinds of things
+While the stack is managed by the CPU, the heap is managed by a memory allocator (like malloc in C or new in C++).
+1. The Allocator
 
+You aren't just looking at raw memory; you're looking at how the Heap Manager (e.g., ptmalloc in Linux/glibc or the Windows Heap Manager) organizes it.
+Chunks/Bins: The heap is divided into "chunks." When memory is freed, the allocator doesn't usually give it back to the OS immediately; it puts it into "bins" (freelist) to be reused later.
+Metadata: Every chunk has a hidden header right before the pointer returned to the programmer. This header contains the size of the chunk and flags (like "Is the previous chunk in use?").
 
+2. Dynamic Object Tracking
+In RE, you’ll often see a pointer stored on the stack or in a register that points to an address on the heap.
+Structs and Classes: If you see lea rdi, [rax+10h], the program is likely accessing a specific field inside a heap-allocated structure.
+vTables (C++): This is huge. For polymorphic classes, the heap object starts with a pointer to a Virtual Method Table. Following this table is how you find the actual functions being called.
+
+3. Allocation Patterns
+Recognizing standard library calls is key to finding the heap:
+malloc / calloc / realloc: The basic building blocks.
+free: This is where things get interesting for security. If a program uses a pointer after it has been freed, you found a Use-After-Free (UAF) bug.
+
+4. Heap Corruption (Exploitation)
+Reverse engineers look for ways to "trick" the heap manager:
+Heap Overflow: Writing past the end of a heap buffer to overwrite the metadata of the next chunk.
+Double Free: Freeing the same pointer twice, which can corrupt the "bins" and potentially allow an attacker to write data to an arbitrary location in memory.
+Heap Spraying: Filling the heap with specific data (like NOP sleds or shellcode) to make an exploit more reliable when the exact memory address is unpredictable.
+
+5. Tools for the Heap
+Since the heap is dynamic, static analysis (looking at code in IDA/Ghidra) is often not enough. You need Dynamic Analysis:
+GDB with GEF/pwndbg: These extensions have specific commands (like heap chunks or bins) that visualize how the allocator is currently organized.
+Valgrind / ASAN: These tools help identify leaks and memory corruption during execution.
+
+So in the view of reverse engineering:
+
+Stack RE: Focuses on Control Flow.
+Heap RE: Focuses on Data Integrity and Object Lifetime (what is this data, and is it still valid?).
 
 ***
+pointer and value.
 what kind of data is saved into which area inside memory 
