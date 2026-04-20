@@ -1,4 +1,5 @@
 Summary of What to Learn
+(ida freeware 9.2 and x64dbg)
 Windows x64 (MASM/NASM): Essential if you want to understand malware analysis or game modding on PCs.
 Linux AMD64 (NASM/Intel Syntax): Often considered the best "starting point" because the environment is very assembly-friendly.
 Linux ARM64: Critical for mobile development, IoT, and modern cloud servers.
