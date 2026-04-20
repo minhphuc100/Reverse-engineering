@@ -79,6 +79,14 @@ So in the view of reverse engineering:
 Stack RE: Focuses on Control Flow.
 Heap RE: Focuses on Data Integrity and Object Lifetime (what is this data, and is it still valid?).
 
+
+
+For convenience, let talk about what kind of variables is store in each section inside the memory.
+
+
+
+
+
 ***
 pointer and value.
 what kind of data is saved into which area inside memory 
