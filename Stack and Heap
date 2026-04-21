@@ -128,4 +128,14 @@ Constants: Variables marked const (sometimes).
 
 Note: in pointer.
 during a function, if we create a new object variable, if a global variable is point to that value, we should keep it in heap instead of stack. If not, when the function end, stack is cleared, the global variables will point to wrong address.
+
+In C++, syntax of pointer.
+int x = 10;     // The actual object
+int* a = &x;    // 'a' is a pointer holding the address of x
+int* d = a;     // 'd' now holds the same address as 'a'
+
+*d = 20;        // Changing what 'd' points to...
+// Now 'x' is 20, and 'a' also sees the value as 20.
+
+
 ***
