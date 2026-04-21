@@ -83,8 +83,43 @@ Heap RE: Focuses on Data Integrity and Object Lifetime (what is this data, and i
 
 For convenience, let talk about what kind of variables is store in each section inside the memory.
 
+1. The Stack (Local Variables)
+The stack is for "automatic" variables. These are variables declared inside a function that only need to exist while that function is running. 
 
+What goes here: Local integers, floats, and fixed-size arrays declared inside a function.
+Lifetime: They are automatically "pushed" onto the stack when the function starts and "popped" (deleted) when the function returns.
 
+Example:
+
+void myFunction() {
+    int x = 10;          // Stored on the Stack
+    char buffer[100];    // Stored on the Stack
+}
+
+2. The Heap (Dynamic Allocation)
+The heap is used when you need memory to persist even after a function ends, or when you don't know how much memory you'll need until the program is actually running. 
+
+What goes here: Anything created using malloc(), calloc(), or realloc().
+Lifetime: It stays there until you manually call free(). If you forget, you get a "memory leak".
+Example:
+
+int *ptr = malloc(sizeof(int)); // The *pointer* ptr is on the stack, 
+                                // but the *integer* it points to is on the HEAP.
+
+3. Static/Global Data (The "Data" and "BSS" Sections)
+Variables that need to live for the entire duration of the program are not on the stack or the heap. 
+
+Global variables: Declared outside any function.
+Static variables: Declared with the static keyword.
+Example:
+
+int globalCount = 0;  // Stored in Data Segment (not stack or heap)
+
+4. Text/Read-Only (Code & Literals)
+This is where your compiled code and "hardcoded" values live. 
+
+String Literals: Like the "Hello" from your previous question.
+Constants: Variables marked const (sometimes). 
 
 
 ***
