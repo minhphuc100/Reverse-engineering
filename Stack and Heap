@@ -89,6 +89,8 @@ The stack is for "automatic" variables. These are variables declared inside a fu
 What goes here: Local integers, floats, and fixed-size arrays declared inside a function.
 Lifetime: They are automatically "pushed" onto the stack when the function starts and "popped" (deleted) when the function returns.
 
+- Although we create shadow space to take results from function ( which mean the values are not inside a function, and not only exist while function is running ),  they are also count as temporary variable. Which, are the variables for caller to use.
+
 Example:
 
 void myFunction() {
@@ -101,6 +103,9 @@ The heap is used when you need memory to persist even after a function ends, or 
 
 What goes here: Anything created using malloc(), calloc(), or realloc().
 Lifetime: It stays there until you manually call free(). If you forget, you get a "memory leak".
+
+- In asynchronous programming, heap is where they save the result.
+
 Example:
 
 int *ptr = malloc(sizeof(int)); // The *pointer* ptr is on the stack, 
@@ -121,7 +126,6 @@ This is where your compiled code and "hardcoded" values live.
 String Literals: Like the "Hello" from your previous question.
 Constants: Variables marked const (sometimes). 
 
-
+Note: in pointer.
+during a function, if we create a new object variable, if a global variable is point to that value, we should keep it in heap instead of stack. If not, when the function end, stack is cleared, the global variables will point to wrong address.
 ***
-pointer and value.
-what kind of data is saved into which area inside memory 
