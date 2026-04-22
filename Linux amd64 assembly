@@ -1,0 +1,79 @@
+While Linux AMD64 and Windows use the same AMD64 (x86-64) hardware instructions, they differ significantly in how the software interfaces with the operating system. 
+
+Both Linux amd64 and Windows x64:
+
+Use the same registers: rax, rbx, rcx, rdx, rsi, rdi, rsp, rbp, r8–r15
+Same instruction set (Intel/AMD x86-64)
+Same machine code format
+----
+When you use std::cout in a C++ program on AMD64 (x64), the CPU instructions are the same, but the way they "talk" to the operating system is completely different.
+
+0. Why they differ (The Execution Path) for just that simple task
+Even though both use the SYSCALL instruction eventually, they have different philosophies on how you get there:
+
+Linux (Direct and Stable):
+The Chain: std::cout → printf → write() (in glibc) → SYSCALL.
+On Linux, the "System Call" is the official, documented interface. If you want to print in assembly, you put the value 1 (for sys_write) into the RAX register and trigger SYSCALL directly. 
+This number almost never changes between Linux versions.
+
+Windows (Layered and Hidden):
+The Chain: std::cout → printf → WriteFile() (Win32 API) → NtWriteFile() (Native API) → SYSCALL.
+On Windows, you are not supposed to use the SYSCALL instruction directly. Instead, you call a function in a Dynamic Link Library (DLL) like kernel32.dll. 
+The system call numbers in Windows are secret and change with every major update (like between Windows 10 and 11). 
+
+1. Compatibility vs. Control: The "Contract"
+The two operating systems have very different philosophies regarding how a program should talk to the hardware.
+
+Linux (The Stable Door): Linux treats its System Call (syscall) numbers as a permanent contract. If syscall 1 is write today, it will be write twenty years from now. Because this "door" never moves, assembly programmers can jump straight to the kernel safely.
+
+Windows (The Moving Target): Microsoft views syscall numbers as internal implementation details. They might change the number for "opening a file" between Windows 10 and Windows 11 to optimize performance or security. To prevent your app from breaking, they force you to use a "middleman"—the Win32 API.
+
+2. The Assembly Perspective: Numbers vs. Labels
+When you write in assembly, the difference is literal. You are either hard-coding an index or linking to a library.
+
+Linux: The Direct Approach
+In Linux assembly (x64), you move the syscall number directly into a register and trigger the kernel.
+
+Mechanism: You use the syscall instruction.
+
+Logic: The kernel looks at the number in rax and knows exactly what to do.
+
+Code snippet
+; Linux Example: Writing "Hi"
+mov rax, 1          ; Syscall number for sys_write
+mov rdi, 1          ; File descriptor (stdout)
+mov rsi, message    ; Buffer address
+mov rdx, 2          ; Message length
+syscall             ; Direct jump to kernel
+Windows: The Abstraction Approach
+In Windows assembly, you almost never use the syscall instruction directly. Instead, you use call.
+
+Mechanism: You push your arguments and then call a function label like WriteFile.
+
+Logic: Your code calls a function inside kernel32.dll. That DLL then figures out what the current, "secret" syscall number is for your specific version of Windows and handles the jump for you.
+
+Code snippet
+; Windows Example: Writing "Hi"
+sub rsp, 40         ; Shadow space for the API call
+mov rcx, [handle]   ; First argument (file handle)
+mov rdx, message    ; Second argument (buffer)
+; ... other arguments ...
+call WriteFile      ; Calling a name, not a number
+add rsp, 40
+3. Why Windows Avoids Direct Kernel Talk
+If you tried to bypass the API and use raw syscalls in Windows assembly, you'd run into three major "Why-nots":
+
+Binary Fragility: If you hard-code mov eax, 18 because that’s the syscall for "Close Handle" today, your program will likely crash (or do something dangerous) after the next Tuesday Windows Update when that number changes to 19.
+
+The "Veneer" of Security: The Win32 API performs "Sanity Checks." It verifies your pointers and permissions in user mode before ever bothering the kernel. Talking to the OS directly bypasses these safety nets, making the system more prone to Blue Screens if you make a typo in your assembly.
+
+Hardware Abstraction: Windows supports a massive variety of hardware. The API acts as a universal translator. If you talked to the kernel directly, you might have to handle the specific quirks of different CPU architectures or driver states yourself. The API hides that complexity behind a simple function name.
+
+4. Legacy and Philosophy
+Linux (Unix Philosophy): "Everything is a file." Whether you are writing to a hard drive, a screen, or a keyboard, you use the same write syscall. This simplicity makes a stable syscall table easy to maintain.
+
+Windows (Object-Oriented Design): Windows treats everything as an "Object" or a "Handle." To manage these complex objects, you need the sophisticated logic found in the Win32 API layers. It prefers Reliability (keeping 20-year-old apps running) over Directness.
+
+--> so in summary, direct	SYSCALL is standard practice for linux, while	CALL to a DLL (inside API) is standard practice for windows
+
+
