@@ -3,4 +3,6 @@ The IDA Overview:
 
 The tryhackme is really good at giving us an overview for IDA freeware, i am really recommending you to read that.
 https://tryhackme.com/room/windowsreversingintro
-
+F5 to generate pseudo code
+Spacebar to change between graph view and list view
+( As i learn further, it is indeed that linux AMD64 is beginner friendly than Windowx64 assembly, so i think i should go there first )
