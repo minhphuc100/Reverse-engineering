@@ -5,6 +5,13 @@ Both Linux amd64 and Windows x64:
 Use the same registers: rax, rbx, rcx, rdx, rsi, rdi, rsp, rbp, r8–r15
 Same instruction set (Intel/AMD x86-64)
 Same machine code format
+
+File extension:
+.asm,.s ( in plain text)
+.o,.so( like dll in windows) (in elf64)
+executable don't have extention, (in elf64)
+
+
 ----
 When you use std::cout in a C++ program on AMD64 (x64), the CPU instructions are the same, but the way they "talk" to the operating system is completely different.
 
@@ -74,6 +81,119 @@ Linux (Unix Philosophy): "Everything is a file." Whether you are writing to a ha
 
 Windows (Object-Oriented Design): Windows treats everything as an "Object" or a "Handle." To manage these complex objects, you need the sophisticated logic found in the Win32 API layers. It prefers Reliability (keeping 20-year-old apps running) over Directness.
 
---> so in summary, direct	SYSCALL is standard practice for linux, while	CALL to a DLL (inside API) is standard practice for windows
+--> so in summary, direct	SYSCALL is standard practice for linux, while	CALL to a DLL (inside API) is standard practice for windows 
+
+
+That mean, linux use rax to control syscall :
+rax 	System Call	    Description
+0    	sys_read	      Read data from a file descriptor.
+1	    sys_write	      Write data to a file descriptor.
+2	    sys_open	      Open a file.
+3	    sys_close	      Close a file descriptor.
+9	    sys_mmap	      Map files or devices into memory.
+11	  sys_munmap	    Unmap memory.
+12	  sys_brk	        Change the amount of space allocated for the data segment.
+39	  sys_getpid	    Get the process ID.
+57	  sys_fork	      Create a child process.
+59	  sys_execve	    Execute a program.
+60	  sys_exit	      Terminate the current process.
+
+Calling convention.
+In linux, there are two kind of call
+Linux (System V AMD64 ABI)
+Stack must be 16-byte aligned before call
+
+Function arguments go in: ( in order of that )
+
+rdi, rsi, rdx, rcx, r8, r9
+
+Return value:
+
+rax
+
+Linux syscall register convention
+Stack must be 16-byte aligned before call
+
+Function arguments go in: ( in order of that )
+rdi, rsi, rdx, r10, r8, r9
+
+rax is for syscall number
+Return value :
+rcx
+----
+Linux (ELF) — entry & exit
+✅ Entry point
+
+In Linux assembly (no C runtime), you define:
+
+global _start
+_start:
+_start is the real entry point used by the linker
+No main unless you link with libc
+✅ Exit (syscall)
+
+You exit using a syscall:
+
+mov rax, 60     ; syscall: exit
+mov rdi, 0      ; exit code
+syscall
+🔹 Full minimal example
+section .text
+global _start
+
+_start:
+    mov rax, 60     ; exit syscall
+    xor rdi, rdi    ; return 0
+    syscall
+
+✔ No function call
+✔ Direct kernel interaction
+----
+Windows (PE) — entry & exit
+
+Windows is more layered.
+
+✅ Entry point options
+Option A: With C runtime (common)
+mainCRTStartup
+
+or
+
+main
+Option B: No CRT (pure assembly)
+
+You define your own entry like:
+
+global start
+start:
+
+…but you must tell the linker:
+
+/ENTRY:start
+✅ Exit (Windows API)
+
+Instead of syscall, you call:
+
+ExitProcess
+
+Example:
+
+extern ExitProcess
+
+section .text
+global start
+
+start:
+    sub rsp, 32        ; shadow space
+    mov rcx, 0         ; exit code
+    call ExitProcess
+----
+Linux don't use shadow space, so what alternative solution for linux.
+It simply:
+
+allocates stack space only when needed using sub rsp, N and/or uses registers when possible.
+so exactly how linux do it ?
+There thing is, it basicly no rule for 32 bits extra space have to be created, but when needed, it still create a "enough" space inside the function, on the stack (after ret address) during the function, the remove it before return.
+If not needed, it is not creating any additional space at all
 
 
