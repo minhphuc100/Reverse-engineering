@@ -196,4 +196,14 @@ so exactly how linux do it ?
 There thing is, it basicly no rule for 32 bits extra space have to be created, but when needed, it still create a "enough" space inside the function, on the stack (after ret address) during the function, the remove it before return.
 If not needed, it is not creating any additional space at all
 
+Special in linux amd64
+In leaf function, ( function that don't call any other function )
+where can use space below the rsp to temporary save value ( 128 bit below is safe).
+mov [rsp-8], rax
 
+But you may wonder, why Windows don't also use it but use differently
+-- That because, Windows may use memory below rsp for:
+Exception handling data
+Debugging / stack unwinding
+Interrupt handling
+So your data can be silently overwritten.
