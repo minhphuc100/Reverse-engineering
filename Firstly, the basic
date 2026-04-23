@@ -93,60 +93,6 @@ For example, YMM# registers are 256-bit wide each and can hold 4 64-bit values o
 Similarly, the XMM# registers are 128-bits wide and can hold 2 64-bit values or 4 32-bit values.
 Special instructions are needed to utilize these registers as vectors.
 
-
-Calling convention
-
-When calling a function, theoretically, you could pass parameter via register, stack or even on disk. However, you need to be sure the function know the order and location
-of each parameters you pass and value you get from it. 
-This isn't too big of a problem if you are using your own functions, but things would get messy when you start using libraries. 
-To solve this problem we have calling conventions that define how parameters are passed to a function, who allocates space for variables, and who cleans up the stack.
-
-Callee refers to the function being called (child), and the caller is the function making the call(parent).
-There are several different calling conventions including cdecl, syscall, stdcall, fastcall, and more. 
-We are focus on x64 Windows for simplicity, we will be working with x64 fastcall. ( amd64 and arm64 in linux is quiet different, like more "aggressive" type of call)
-
-Fastcall is the calling convention for x64 Windows. Windows uses a four-register fastcall calling convention by default. 
-Quick FYI, when talking about calling conventions you will hear about something called the "Application Binary Interface" (ABI). 
-The ABI defines various rules for programs such as calling conventions, parameter handling, and more.
-
-How does the x64 Windows calling convention work?
-
-The first four parameters are passed in registers, LEFT to RIGHT. 
-
-Parameters that are not floating-point values, such as integers, pointers, and chars, will be passed via RCX, RDX, R8, and R9 (in that order). 
-Floating-point parameters will be passed via XMM0, XMM1, XMM2, and XMM3 (in that order).
-
-If there is a mix of floating-point and integer values, they will still be passed via the register that corresponds to their position. 
-For example, func(1, 3.14, 6, 6.28) will pass the first parameter through RCX, the second through XMM1, the third through R8, and the last through XMM3.
-
-If the parameter being passed is too big to fit in a register then it is passed by reference (a pointer to the data in memory). 
-Parameters can be passed via any sized corresponding register. 
-
-For example, RCX, ECX, CX, CH, and CL can all be used for the first parameter. Any other parameters are pushed onto the stack, RIGHT to LEFT. ( from the right to the left of the remaining parameter are pushed into the stack)
-
-
-There is always going to be space allocated on the stack for 4 parameters, even if there aren't any parameters. 
-This space isn't completely wasted because the compiler can, and often will, use it. 
-Usually, if it's a debug build, the compiler will put a copy of the parameters in the space. 
-On release builds, the compiler will use it for temporary or local variable storage.
-
-
-Here are some more rules of the calling convention:
-
-The base pointer (RBP) is saved when a function is called so it can be restored.
-A function's return value is passed via RAX if it's an integer, bool, char, etc., or XMM0 if it's a float or double.
-Member functions have an implicit first parameter for the "this" pointer. Because it's a pointer and it's the first parameter, it will be passed via RCX. This can be very useful to know.
-The caller is responsible for allocating space for parameters for the callee. The caller must always allocate space for 4 parameters even if no parameters are passed.
-
-Example: When you call myObject.DoSomething(int a), the machine code effectively treats it as DoSomething(&myObject, a)
-&myObject goes into RCX.
-a goes into RDX.
-The stack pointer drops by 32 bytes just in case the function wants to save those values to memory.
-
-The registers RAX, RCX, RDX, R8, R9, R10, R11, and XMM0-XMM5 are considered volatile and must be considered destroyed on function calls.
-The registers RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15, and XMM6-XMM15 are considered nonvolatile and should be saved and restored by a function that uses them.
-
-
 Instructions
 There are roughly 1,500 instructions, however, a majority of the instructions are not commonly used or they're just variations (such as MOV and MOVS).
 Just like in high-level programming, don't hesitate to look up something you don't know.
@@ -195,7 +141,7 @@ inc RAX; increase value in RAX by one , can trigger flag but not carry flag
 DEC: decrease 1
 dec RAX; decrease value in rax by one , same as inc
 
-MUL-T ( Multiplication , shout out to ROR2)
+MUL-T ( Multiplication , ROR2)
 We have two kind of mul, MUL ( unsigned ) and IMUL ( signed )
 MOV RAX, 5
 MOV RBX, 10
@@ -293,7 +239,7 @@ Before a function, what is this mean
 This two instruction is manipulating the stacks (to manipulating the flow of instruction)
 The sub rsp, 28h is adding 'empty' 40 bits space to the stack (rs pointer go down). But why 40 bits you ask, that because:
 before call a function, address of next instruction ( return address) after the call in main is pushed on top of the stack, which is 8 bits only, so additional 8 is for padding the remaining 8 to get to 16, and 32 bit is enough to keep two 16-bits addresses or four 8-bits addresses. ( ABI rule)
-there space (shadow space) can be use to be additional temporary space to save value from a function, to save register arguments, etc
+there space (shadow space) can be use to be additional temporary space to save value for a function, to save register arguments, etc
 add rsp 28h ; will let us rsp back to the address of next instruction.
 Layout
 older address
