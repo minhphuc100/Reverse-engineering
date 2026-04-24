@@ -207,3 +207,102 @@ Exception handling data
 Debugging / stack unwinding
 Interrupt handling
 So your data can be silently overwritten.
+
+Compare the process of Windows load and PE (exe) file and Linux load elf file
+1. Windows PE loading 
+Step 1: Read PE headers
+Windows parses:
+DOS header (MZ)
+PE header
+Optional header (important)
+Section table
+
+From this it gets:
+Image base (preferred load address)
+Entry point (RVA)
+Sections like .text, .data, .rdata
+
+Step 2: Create process
+New virtual address space
+Main thread created
+
+Step 3: Map sections into memory
+Each section of exe file is mapped:
+Section	Purpose
+.text	code
+.data	writable data
+.rdata	read-only data
+
+Step 4: Apply relocations (if needed)
+Fix all absolute addresses
+
+Step 5: Resolve imports (VERY important)
+
+PE has an Import Table:
+Lists functions like WriteFile, ExitProcess
+Loader:
+Loads required DLLs (kernel32.dll, etc.)
+Fills in function addresses
+
+Step 6: Set up stack & registers
+Stack created
+Arguments prepared
+rsp initialized
+
+Step 7: Jump to entry point
+Entry point is usually:
+mainCRTStartup
+
+2. Linux ELF loading (step-by-step)
+Step 1: Read ELF header
+
+Kernel reads:
+ELF header
+Program headers (NOT sections)
+
+Important fields:
+Entry point
+Loadable segments
+
+Step 2: Create process
+New address space
+Process image initialized
+
+Step 3: Map segments (not sections!)
+
+ELF uses segments, not sections:
+
+Segment	Contains
+LOAD	code + data
+DYNAMIC	dynamic linking info
+
+Step 4: Load dynamic linker (if needed)
+If dynamically linked:
+Kernel loads:
+/lib64/ld-linux-x86-64.so.2
+This linker will:
+Load shared libraries (libc.so)
+Resolve symbols
+
+Step 5: Resolve symbols
+Dynamic linker:
+Fixes function addresses (printf, etc.)
+Sets up GOT/PLT
+
+Step 6: Set up stack
+Kernel pushes onto stack:
+argc
+argv
+envp
+auxiliary vector
+
+Step 7: Jump to entry point
+Entry is usually:
+_start
+
+
+
+
+
+
+
