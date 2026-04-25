@@ -5,4 +5,38 @@ The tryhackme is really good at giving us an overview for IDA freeware, i am rea
 https://tryhackme.com/room/windowsreversingintro
 F5 to generate pseudo code
 Spacebar to change between graph view and list view
-( As i learn further, it is indeed that linux AMD64 is beginner friendly than Windowx64 assembly, so i think i should go there first )
+
+
+Getting started with HelloWolrd.exe
+
+In this file, we use both printf and std::cout to print out data, but they are kind of different.
+
+printf()
+The first parameter (passed via RCX) is the format string "%s\n", the second parameter (RDX) is the "Hello with..." string. Immediately after the two parameters is the call.
+
+std::cout
+We can identify it's std::cout without using the string printed to the console because we can see things related to cout, basic_ostream, and char_traits.
+You may notice the names of the functions are quite odd as displayed in IDA. We will discuss this in the DLL section, but in short, the names are mangled for function overloading. 
+For now, look past the name mangling. With that said, you may not be familiar with those functions so the first thing to do is look them up. 
+
+Here's a brief overview of them all:
+
+basic_ostream - C++ template for output streams.
+char_traits - Provides some abstraction from basic character and string types.
+cout - std::cout - Sends text to the console.
+
+Analyze the loop.exe
+
+Initial Analysis
+To start let me introduce you to the best skill to develop as a reverse engineer. It's being able to skim over the unimportant stuff otherwise you'll waste your time and go into a rabbit hole.
+In the graph view, we can see a big box at the top. Looking at it we can see that it mostly just prints stuff so we can skim through it just to make sure there's nothing important.
+Looking towards the bottom of the big box, which I will refer to as the loop initialization part of the code, we can see some interesting stuff.
+
+cmovnb : Conditional MOV if not below
+
+Struct, array, object.
+
+
+
+
+
