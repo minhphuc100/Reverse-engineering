@@ -312,8 +312,8 @@ Usually, if it's a debug build, the compiler will put a copy of the parameters i
 
 Here are some more rules of the calling convention:
 
-- The base pointer (RBP) is saved when a function is called so it can be restored ? ****** !!!!!!
-- A function's return value is passed via RAX if it's an integer, bool, char, etc., or XMM0 if it's a float or double.
+- The base pointer (RBP) is saved when a function is called so it can be restored
+- A function's return value is passed via RAX if it's an integer, bool, char, etc ., or XMM0 if it's a float or double.
 - Member functions have an implicit first parameter for the "this" pointer. Because it's a pointer and it's the first parameter, it will be passed via RCX.
 - The caller is responsible for allocating space for parameters for the callee. The caller must always allocate space for 4 parameters even if no parameters are passed.
 - The registers RAX, RCX, RDX, R8, R9, R10, R11, and XMM0-XMM5 are considered volatile and must be considered destroyed on function calls.
