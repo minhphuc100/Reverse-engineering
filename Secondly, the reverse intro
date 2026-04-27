@@ -34,7 +34,7 @@ Looking towards the bottom of the big box, which I will refer to as the loop ini
 
 cmovnb : Conditional MOV if not below
 
-Struct, class, array. ( reference from tryhackme)
+Struct, class, array.
 
 Arrays store multiple pieces of data which are the same type sequentially in memory. Let's say you have an array of 5 integers that starts at the address of 0x4000. 
 The size of the array is 20 bytes since each integer is 4 bytes. The first integer is at 0x4000+0x0, the second is at 0x4000+0x04, and so on. Arrays are usually easy to analyze,
@@ -115,7 +115,33 @@ Click the variable: IDA will highlight all instances of that variable.
 Check the assignment: Look for the = sign immediately following a function call.
 Right-click -> Force call type: If the decompiler looks messy, you can manually fix the function prototype to tell IDA exactly how many values are being returned or modified via pointers.
 
+**In static analysis with IDA 9.2, you can quickly identify how a function affects memory or variables by using Cross-References (Xrefs) and Data Flow Analysis. While breakpoints show you a single "snapshot" of data during execution, static analysis shows you every place that data could be touched.
 
+1. The Quickest Way: Cross-References (Xrefs)
+Cross-references are the static equivalent of a "trace" on a variable.
+How to use: Click on a variable name or memory address and press X.
+What it tells you: IDA will pop up a window listing every instruction that accesses that variable. It even classifies the access type:
+r (Read): The function is using the variable's value.
+w (Write): The function is setting or changing the variable's value. This is your "dynamic breakpoint" equivalent.
+p (Pointer): The function is taking the address of the variable.
+
+2. Global Type Xrefs (Ctrl+Alt+X)
+If you are using the decompiler and want to see every function that modifies a specific structure field (like MyStruct->status), standard X might not show everything.
+Shortcut: Press Ctrl+Alt+X on a field in the pseudocode.
+Result: IDA will decompile other functions in the background to find where that specific field is modified across the entire program. 
+
+3. Proximity Browser
+For a visual "quick look" at how functions and data interact, use the Proximity Browser. 
+How to use: Right-click a function or variable and select Proximity browser.
+What it tells you: It creates a graph showing exactly which functions read from or write to specific global variables. This is the fastest way to see "Side Effects"—if calling Function A secretly modifies Variable B. 
+
+4. Hex-Rays "Map to another variable"
+If the decompiler is confusing two variables or you want to see if one value "flows" into another:
+Shortcut: Use the = key (or right-click -> Map to another variable) in the pseudocode.
+Use Case: This helps you unify local variables that IDA might have split, making it clear that a value from a function is being passed directly into another variable. 
+
+5. Xref Graph and Tree (New in 9.2)
+IDA 9.2 introduced enhanced Xref Graphs and Xref Trees and Xref Trees. These tools allow you to trace the "path" of a variable's value through multiple layers of function calls without having to manually jump back and forth between functions.
 
 
 
@@ -125,34 +151,6 @@ Right-click -> Force call type: If the decompiler looks messy, you can manually 
 ... Learn deeper about each segment or section of an assembly file
 
 
-In static analysis with IDA 9.2, you can quickly identify how a function affects memory or variables by using Cross-References (Xrefs) and Data Flow Analysis. While breakpoints show you a single "snapshot" of data during execution, static analysis shows you every place that data could be touched.
-1. The Quickest Way: Cross-References (Xrefs)
-Cross-references are the static equivalent of a "trace" on a variable.
-How to use: Click on a variable name or memory address and press X.
-What it tells you: IDA will pop up a window listing every instruction that accesses that variable. It even classifies the access type:
-r (Read): The function is using the variable's value.
-w (Write): The function is setting or changing the variable's value. This is your "dynamic breakpoint" equivalent.
-p (Pointer): The function is taking the address of the variable.
-2. Global Type Xrefs (Ctrl+Alt+X)
-If you are using the decompiler and want to see every function that modifies a specific structure field (like MyStruct->status), standard X might not show everything.
-Shortcut: Press Ctrl+Alt+X on a field in the pseudocode.
-Result: IDA will decompile other functions in the background to find where that specific field is modified across the entire program. 
-hex-rays.com
-hex-rays.com
-3. Proximity Browser
-For a visual "quick look" at how functions and data interact, use the Proximity Browser. 
-How to use: Right-click a function or variable and select Proximity browser.
-What it tells you: It creates a graph showing exactly which functions read from or write to specific global variables. This is the fastest way to see "Side Effects"—if calling Function A secretly modifies Variable B. 
-YouTube
-YouTube
-4. Hex-Rays "Map to another variable"
-If the decompiler is confusing two variables or you want to see if one value "flows" into another:
-Shortcut: Use the = key (or right-click -> Map to another variable) in the pseudocode.
-Use Case: This helps you unify local variables that IDA might have split, making it clear that a value from a function is being passed directly into another variable. 
-hex-rays.com
-hex-rays.com
- +1
-5. Xref Graph and Tree (New in 9.2)
-IDA 9.2 introduced enhanced Xref Graphs and Xref Trees and Xref Trees. These tools allow you to trace the "path" of a variable's value through multiple layers of function calls without having to manually jump back and forth between functions.
+
 
 
