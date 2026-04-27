@@ -34,7 +34,7 @@ Looking towards the bottom of the big box, which I will refer to as the loop ini
 
 cmovnb : Conditional MOV if not below
 
-Struct, class, array, object.
+Struct, class, array. ( reference from tryhackme)
 
 Arrays store multiple pieces of data which are the same type sequentially in memory. Let's say you have an array of 5 integers that starts at the address of 0x4000. 
 The size of the array is 20 bytes since each integer is 4 bytes. The first integer is at 0x4000+0x0, the second is at 0x4000+0x04, and so on. Arrays are usually easy to analyze,
@@ -55,7 +55,8 @@ public:
 	Human(char* newName, int newAge, float newHeight)
 		: age(newAge), height(newHeight), name(newName) {}
 };
-This class's data will take up 16 bytes. 4 bytes for the age, 4 bytes for the height, and 8 for the name (pointers hold addresses and addresses in x64 are 8 bytes). How would this be identified in assembly? Let's say a pointer to the class is contained in RAX, and the address of the class is 0x4000. Here's some pseudo-assembly:
+This class's data will take up 16 bytes. 4 bytes for the age, 4 bytes for the height, and 8 for the name (pointers hold addresses and addresses in x64 are 8 bytes). 
+How would this be identified in assembly? Let's say a pointer to the class is contained in RAX, and the address of the class is 0x4000. Here's some pseudo-assembly:
 
 mov RAX, 0x4000     ; RAX = Address of the class and the age variable (offset 0)
 lea RBX, [RAX+0x4]  ; RBX = Address of height
@@ -63,12 +64,95 @@ lea RCX, [RAX+0x8]  ; RCX = Address of name
 mov [RAX], 0x32     ; age = 50
 mov [RBX], 0x48     ; height = 72
 mov [RCX], 0x424F42 ; name = "BOB"
-As you can see we have the base address stored in RAX, and the items of the class are accessed via offsets. One of the things to pay attention to when dealing with classes is the use of addresses/pointers and the lea instruction. This is done because you usually want to access the data in the class, not a copy of it.
 
-Dealing with classes is usually not too bad, but sometimes you aren't given the full class. For example, it's common for some parts of a class to only be referenced once such as some header information, so you have to be careful. Once again we'll take a look at an actual structure in a future room.
+As you can see we have the base address stored in RAX, and the items of the class are accessed via offsets. One of the things to pay attention to when dealing with classes is the use of addresses/pointers and the lea instruction.
+This is done because you usually want to access the data in the class, not a copy of it.
+
+Dealing with classes is usually not too bad, but sometimes you aren't given the full class. For example, it's common for some parts of a class 
+to only be referenced once such as some header information, so you have to be careful.
+
+Struct 
+A struct is simply a contiguous block of memory where each field lives at a fixed "offset" (distance) from the starting address ( like rsp or rbp)
+
+Key Ways to Identify Variable Values:
+Data Definition Directives: In the data segment, variables are defined with initial values using directives:
+-	DB (Define Byte) - 1 byte
+-	DW (Define Word) - 2 bytes
+-	DD (Define Doubleword) - 4 bytes
+
+Initialization with '?': A ? is used to reserve space without setting a specific value, making it uninitialized.
+
+Instruction Tracing: To see when a value is set during execution, look for MOV (x86) or STR (ARM) instructions that move values from registers into the memory address associated with a variable name.
+
+Arrays and Repetition: DUP can initialize multiple elements with the same value, such as marks * 9 dw 0, which sets nine elements to zero.
+
+Or use dynamic analyze tool like GDB
+
+Function tracking:
+
+1. How a Single Variable Gets a Value
+
+In the decompiler view, IDA maps the function’s return register (usually RAX/EAX on x64/x86) to a local variable.
+Decompiler Output: v5 = get_status();
+What’s happening under the hood: IDA sees the assembly call get_status followed by mov [rbp+var_10], eax. It recognizes that eax holds the return value and "collapses" the assembly into a direct C-style assignment.
+
+2. Two Variables from the Same Function
+Standard C functions usually return only one value. If you see two variables being "set" by one function call in IDA, it usually happens in one of two ways:
+
+A. Pass-by-Reference (Pointers)
+The most common way to "return" multiple values is by passing the addresses of variables as arguments.
+Decompiler: v5 = get_data(&v6, &v7);
+The Logic: Here, v5 is the formal return value (e.g., a success code), while v6 and v7 are modified inside the function because the function has their memory addresses.
+
+B. Direct Register Returns (Optimized/Special Conventions)
+Some compilers or custom calling conventions return values in multiple registers (e.g., RAX and RDX).
+Decompiler: v5 = get_large_value(&v6); (Where v6 might appear as a "high part").
+The Logic: IDA 9.2 is quite good at recognizing __pair types (like a 64-bit value returned as two 32-bit pieces) or __usercall conventions where you manually define which registers map to which variables.
+
+3. Identifying the "Link" in IDA
+To verify where a variable's value is coming from:
+Click the variable: IDA will highlight all instances of that variable.
+Check the assignment: Look for the = sign immediately following a function call.
+Right-click -> Force call type: If the decompiler looks messy, you can manually fix the function prototype to tell IDA exactly how many values are being returned or modified via pointers.
 
 
 
 
+
+
+
+
+... Learn deeper about each segment or section of an assembly file
+
+
+In static analysis with IDA 9.2, you can quickly identify how a function affects memory or variables by using Cross-References (Xrefs) and Data Flow Analysis. While breakpoints show you a single "snapshot" of data during execution, static analysis shows you every place that data could be touched.
+1. The Quickest Way: Cross-References (Xrefs)
+Cross-references are the static equivalent of a "trace" on a variable.
+How to use: Click on a variable name or memory address and press X.
+What it tells you: IDA will pop up a window listing every instruction that accesses that variable. It even classifies the access type:
+r (Read): The function is using the variable's value.
+w (Write): The function is setting or changing the variable's value. This is your "dynamic breakpoint" equivalent.
+p (Pointer): The function is taking the address of the variable.
+2. Global Type Xrefs (Ctrl+Alt+X)
+If you are using the decompiler and want to see every function that modifies a specific structure field (like MyStruct->status), standard X might not show everything.
+Shortcut: Press Ctrl+Alt+X on a field in the pseudocode.
+Result: IDA will decompile other functions in the background to find where that specific field is modified across the entire program. 
+hex-rays.com
+hex-rays.com
+3. Proximity Browser
+For a visual "quick look" at how functions and data interact, use the Proximity Browser. 
+How to use: Right-click a function or variable and select Proximity browser.
+What it tells you: It creates a graph showing exactly which functions read from or write to specific global variables. This is the fastest way to see "Side Effects"—if calling Function A secretly modifies Variable B. 
+YouTube
+YouTube
+4. Hex-Rays "Map to another variable"
+If the decompiler is confusing two variables or you want to see if one value "flows" into another:
+Shortcut: Use the = key (or right-click -> Map to another variable) in the pseudocode.
+Use Case: This helps you unify local variables that IDA might have split, making it clear that a value from a function is being passed directly into another variable. 
+hex-rays.com
+hex-rays.com
+ +1
+5. Xref Graph and Tree (New in 9.2)
+IDA 9.2 introduced enhanced Xref Graphs and Xref Trees and Xref Trees. These tools allow you to trace the "path" of a variable's value through multiple layers of function calls without having to manually jump back and forth between functions.
 
 
