@@ -407,5 +407,7 @@ Remember to check out the Stack and heap for data storage
 
 ***
 But keep note that AT&T is more commonly used for Linux (?) ** what is AT&T ? 
+
 Special case .NET assemblies (?) ** What is .NET assemblies ?
 TEB and PEB ?
+Learn deeper about each segment or section of an assembly file
