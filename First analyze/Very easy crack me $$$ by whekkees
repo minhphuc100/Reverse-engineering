@@ -1,2 +1,22 @@
 In https://crackmes.one/lasts/
 Download link https://crackmes.one/download/crackme/69b18b47ddd6176826ae8950
+
+# Binary Analysis: crackme4.exe
+**Date**: 3/11/2026
+**Objective**: The first analyze to do as the work follow 
+## Initial Reconnaissance
+- File type: PE32+ executable
+- Architecture: window x86-64
+- Stripped:
+- Security features:
+## Key Functions
+- main: [location] - [purpose]
+- sub_401000: [renamed to] - [what it does]
+## Interesting Strings
+- "Enter password": used at [location]
+- "Success": printed from [function]
+## Current Hypothesis
+[What I think is happening]
+## Commands Run
+```bash
+[Keep a log of useful commands]
