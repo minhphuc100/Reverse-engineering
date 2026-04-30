@@ -7,8 +7,8 @@ Download link https://crackmes.one/download/crackme/69b18b47ddd6176826ae8950
 ## Initial Reconnaissance
 - File type: PE32+ executable
 - Architecture: window x86-64
-- Stripped:
-- Security features:
+- Stripped: Yes ? ( Program Database (.pdb) file exists in the same folder as the .exe when it is not stripped ? )
+- Security features: 
 ## Key Functions
 - main: [location] - [purpose]
 - sub_401000: [renamed to] - [what it does]
