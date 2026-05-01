@@ -127,6 +127,12 @@ MOV RAX, RBX ; RAX =5
 LEA RAX, RBX ; error
 LEA RAX, [RBX] ; the rax will have value 5, but we also can perform calculation in the bracket, like add or sub, But it does not change the CPU's condition flags (like the zero or carry flags).
 
+compare also have reference, cmp work exactly like mov
+In RBX, we are having the address of a
+LEA RBX , a
+if we use
+cmp [rbx], 0 ; compare value of a to 0
+
 Push and pop: Stack is directly supported by cpu, have dedicated pointer RSP
 PUSH RAX ; it will push data inside RAX onto the stack, the register being pushed will keep it value
 POP RBX ; it will put data on top of the stack to the RAX
@@ -265,6 +271,8 @@ cmp RAX, 5
 jne 5 ; Jump to line 5 (ret) if not equal.
 mov RBX, 10
 ret
+
+cmp byte ptr [rax+rbx],0 can usually found in the loop, byte ptr is take only first 8 bits of data of [rax+rbx] address ( need more about loop )
 
 NOP -  do nothing, it is typically used for padding because some parts of code like to be on specific boundaries such as 16-bit or 32-bit boundaries.
 
@@ -405,9 +413,53 @@ PEB Structure Layout: https://docs.microsoft.com/en-us/windows/win32/api/wintern
 Next gonna be about IDA 9.2 free.
 Remember to check out the Stack and heap for data storage
 
+In a loop !!
+1. The Address calculation: 
+[rax + rbx]
+Just like mov, the CPU does the math inside the brackets first to find the target location.
+rax: Usually the starting point (Base) of an array or string.
+rbx: Usually the index or offset (like i in array[i]).
+The Result: The CPU calculates one final memory address. 
+It hasn't "looked" inside yet; it just knows where to point.
+2. The Access: byte ptr
+
+This is the "size of the scoop.
+"In mov al, [rax+rbx], the CPU goes to that address and grabs 1 byte to put in al.
+In cmp byte ptr [rax+rbx], 0, the CPU goes to that address and "looks" at 1 byte to see if it's zero.
+Comparison to mov
+If you saw these two lines side-by-side, they would look at the exact same spot in your RAM:
+Instruction                            What it does
+mov cl, byte ptr [rax+rbx]             Copies the byte from that address into the cl register.
+cmp byte ptr [rax+rbx], 0              Inspects the byte at that address to set the Zero Flag.
+
+Why byte ptr is mandatory hereIn mov al, [rax+rbx], the CPU knows you want a byte because al is a 1-byte register.
+In cmp [rax+rbx], 0, the CPU is confused. 
+
+It thinks: "Do you want me to check if that address holds a 1-byte 0, a 4-byte 0, or an 8-byte 0?" 
+
+You must use byte ptr to tell it exactly how much memory to inspect.
+
+
+
+
 ***
 But keep note that AT&T is more commonly used for Linux (?) ** what is AT&T ? 
 
 Special case .NET assemblies (?) ** What is .NET assemblies ?
 TEB and PEB ?
 Learn deeper about each segment or section of an assembly file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
