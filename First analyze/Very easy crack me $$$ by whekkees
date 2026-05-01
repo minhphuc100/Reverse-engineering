@@ -8,12 +8,14 @@ Download link https://crackmes.one/download/crackme/69b18b47ddd6176826ae8950
 - File type: PE32+ executable
 - Architecture: window x86-64
 - Stripped: Yes ? ( Program Database (.pdb) file exists in the same folder as the .exe when it is not stripped ? )
-- Security features: 
+- Security features: Yes ?
 ## Key Functions
-- main: [location] - [purpose]
-- sub_401000: [renamed to] - [what it does]
+- main: [text:00000001400012A0] - [unknown]
+- sub_140001630: [renamed to printout] - [is std::cout]
+- sub_140001850: renamed to cin_funtion - is cin
 ## Interesting Strings
-- "Enter password": used at [location]
+- "Please enter ur login:": used at the start to get the first login
+- Please enter ur password: the second one
 - "Success": printed from [function]
 ## Current Hypothesis
 [What I think is happening]
