@@ -13,12 +13,19 @@ Download link https://crackmes.one/download/crackme/69b18b47ddd6176826ae8950
 - main: [text:00000001400012A0] - [unknown]
 - sub_140001630: [renamed to printout] - [is std::cout]
 - sub_140001850: renamed to cin_funtion - is cin
+- memcmp : compare the values
 ## Interesting Strings
 - "Please enter ur login:": used at the start to get the first login
 - Please enter ur password: the second one
-- "Success": printed from [function]
+- "Nice job bro": printed inside a conditional
 ## Current Hypothesis
-[What I think is happening]
-## Commands Run
-```bash
-[Keep a log of useful commands]
+What I think is happening
+we input username and password, then, it will compare with some value to check for the conditional
+## Infomation
+
+The memcmp function in C is used to compare two blocks of memory byte by byte.
+int memcmp(const void *s1, const void *s2, size_t n);
+In the file, two condition we need to look after
+if ( Size == v7 && (!Size || !memcmp(v8, Buf2, Size)) ) to see the next input
+and
+if ( v21 == v6 && (!v21 || !memcmp(v12, v18, v21)) ) to complete
