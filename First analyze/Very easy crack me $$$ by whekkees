@@ -21,7 +21,6 @@ Download link https://crackmes.one/download/crackme/69b18b47ddd6176826ae8950
 ## Current Hypothesis
 What I think is happening
 we input username and password, then, it will compare with some value to check for the conditional
-## Infomation
 
 The memcmp function in C is used to compare two blocks of memory byte by byte.
 int memcmp(const void *s1, const void *s2, size_t n);
@@ -29,3 +28,28 @@ In the file, two condition we need to look after
 if ( Size == v7 && (!Size || !memcmp(v8, Buf2, Size)) ) to see the next input
 and
 if ( v21 == v6 && (!v21 || !memcmp(v12, v18, v21)) ) to complete
+
+the first input is "whekkes"
+the second input is "qwerty"
+( we can run by using cmd to run the crackmes.exe to see the final value)
+Reason:
+In psuedo code, i saw strcpy function, which assume to put value ( strings into some variable) ( i had look at it before)
+which the first is buf2 with "whekkes", second, v18 with  "qwerty"
+
+Then i just assume they are two input value ?
+Maybe i should look at it deeper.
+in the first cmpmem function, we compare v8 and buf2, but upper, we has v8=buf1 right after the cin for buf1
+
+the second one is the same
+we compare v12 and v18, which, v12=Block right after the cin for Block
+-> Which these two conditionals is only thing we can affect in this program, so i assume this is the correct answer.
+
+However i still don't understand many thing in there, like:
+- Why there is a loop here ? (v7++)
+- Why compare v25 (with value 15) with 0xF for v8=(void **) buf1[0]
+and many more ...
+
+But i think put that aside and move to the next one.
+
+
+
