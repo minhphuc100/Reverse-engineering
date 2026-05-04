@@ -10,12 +10,46 @@ Download link https://crackmes.one/crackme/69bc0fb3ddd6176826ae8a55
 - Stripped: Yes 
 - Security features: Yes
 ## Key Functions
-- main:
-- 
-- 
+- main: text:00000001400016E6
+- Puts ( printf with \n)
+- __imp___acrt_iob_func from api-ms-win-crt-stdio-11-1-0.dll
+- sub_1400028F0
+- fgets 
+- sub_1400015B8
 - 
 ## Interesting Strings
-- 
+- Even with random input, it still output "Correct". But inside we also have "Wrong" output
 - 
 -
 ## Current Hypothesis
+- I thought it is messing with us, right before the jump, we have test eax, eax
+and
+jnz ... to correct and wrong output
+right after a function sub_1400015B8
+
+However, in Correct route, we still have a puts function, while both have 
+mov rcx, rax ; buffer
+
+- That too weird !
+Because the output will be the "buffer", which is nowhere to be found in the final output
+- Which i assume, some function can change buffer data before output. 
+
+- function tracking
+Fgets : char *fgets(char *str, int n, FILE *stream);
+Behavior: Reads until a newline (\n) is hit, n-1 characters are read, or the end of the file (EOF) is reached. It automatically adds a null terminator (\0) at the end.
+Assembly Return: Just like puts, it returns a pointer to the buffer in the RAX/EAX register on success, or NULL (0) on failure.
+
+in this case
+v0 = __acrt_iob_func(0);
+fgets(Buffer, 64, v0);
+
+
+
+
+
+
+
+
+
+
+
