@@ -5,10 +5,10 @@ Download link https://crackmes.one/crackme/69bc0fb3ddd6176826ae8a55
 **Date**: 3/19/2026
 **Objective**: Capture the flag with format CTF_{...} 
 ## Initial Reconnaissance
-- File type: PE32+ executable
+- File type: executable
 - Architecture: window x86-64
-- Stripped: Yes ? ( Program Database (.pdb) file exists in the same folder as the .exe when it is not stripped ? )
-- Security features: Yes ?
+- Stripped: Yes 
+- Security features: Yes
 ## Key Functions
 - main:
 - 
