@@ -52,7 +52,9 @@ the strlen and if condition: is the newline strip (\n is 10 in ascii)
 
 Now the the main condi
 
-malloc: as learnt before, it save data to the heap
+malloc: as learnt before, it "not" save data to the heap,it create a available space in heap ,then return the address of the data to rax
+Request      mov rcx, 64       ;   Passing the size to the function.
+
 shl: shift logical left, here:
 shl eax,3 is mul-t eax with 8
 
