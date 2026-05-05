@@ -15,7 +15,7 @@ Download link https://crackmes.one/crackme/69bc0fb3ddd6176826ae8a55
 - __imp___acrt_iob_func from api-ms-win-crt-stdio-11-1-0.dll
 - sub_1400028F0
 - fgets 
-- sub_1400015B8
+- sub_1400015B8 as the_main_condi
 - 
 ## Interesting Strings
 - Even with random input, it still output "Correct". But inside we also have "Wrong" output
@@ -43,7 +43,21 @@ in this case
 v0 = __acrt_iob_func(0);
 fgets(Buffer, 64, v0);
 
+Now that the program has the pointer to stdin (v0), it calls fgets to actually get your typing.
+Buffer: The memory location where your input will be saved.
+64: The maximum number of bytes to read. This is a security feature to prevent a "Buffer Overflow"—it will never read more than 63 characters (leaving 1 byte for the null terminator).
+v0: Tells fgets to read from the keyboard ( the above function ).
 
+the strlen and if condition: is the newline strip (\n is 10 in ascii)
+
+Now the the main condi
+
+malloc: as learnt before, it save data to the heap
+shl: shift logical left, here:
+shl eax,3 is mul-t eax with 8
+
+CDQE (Convert Doubleword to Quadword Extended) is an x86-64 assembly instruction used to sign-extend a value from 32 bits to 64 bits.It specifically operates on the RAX register.
+It takes the 32-bit value in EAX and fills the upper 32 bits of RAX with the "sign bit" (the highest bit of EAX).
 
 
 
