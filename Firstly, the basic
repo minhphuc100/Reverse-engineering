@@ -137,8 +137,6 @@ Push and pop: Stack is directly supported by cpu, have dedicated pointer RSP
 PUSH RAX ; it will push data inside RAX onto the stack, the register being pushed will keep it value
 POP RBX ; it will put data on top of the stack to the RAX
 
-MOV [RAX], [RBX]; is error ( almost same as LEA RAX, RBX )
-
 Arithmetic:
 add rax, 1 ; add 1 to rax, can trigger flags like normal ( Zero flag, sign flag, overflow flag and carry flag )
 SUB rax, 1 ; sub 1 , same as add
