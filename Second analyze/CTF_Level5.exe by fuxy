@@ -61,7 +61,13 @@ Pseudo-code: *(_BYTE *)ptr
 Assembly Translation: This forces the assembly to use a specific size suffix or register size.
 x86: mov al, byte ptr [ebx]   (The _BYTE cast tells the assembler to only use the 8-bit al register, and the * outside tell to look at that address to get value).
 
-found but don't know why again.
+
+in off_140003000, we have the flag in ascii,
+
+for correct output, we need v6 is 0, which mean, the v6 += ((char)Block[v4] - 48) ^ (off_140003000[v5++] - 48); need to be zero
+which the block have to be the off_14003000[v5++] xor with block[v4] is the same
+
+so the final flag is CTF{ASCII-mOre-like_BINASCII!!!}
 
 
 
