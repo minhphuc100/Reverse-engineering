@@ -10,11 +10,19 @@ Download link https://crackmes.one/crackme/69eca77717539b5175d120a9
 - Stripped: Yes 
 - Security features: Yes
 ## Key Functions
-- main:
-- 
+- text:0000000140001125 start
+- tlscallback ?
 - 
 ## Interesting Strings
-- 
+- no interesting string ( it not in memory)
 - 
 -
 ## Current Hypothesis
+
+all string is in .bss ( not learn about each part of a file yet) but, it basicly mean the strings is packed or encrypted, it is uninitialized; exists only in RAM.
+
+
+***
+i think this task should use dynamic analyze, however, i haven't found the input yet.
+
+
