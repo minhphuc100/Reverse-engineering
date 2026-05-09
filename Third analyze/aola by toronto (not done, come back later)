@@ -11,8 +11,8 @@ Download link https://crackmes.one/crackme/69eca77717539b5175d120a9
 - Security features: Yes
 ## Key Functions
 - text:0000000140001125 start
-- tlscallback ?
-- 
+- tlscallback_0
+- tlscallback_1
 ## Interesting Strings
 - no interesting string ( it not in memory)
 - 
@@ -24,5 +24,6 @@ all string is in .bss ( not learn about each part of a file yet) but, it basicly
 
 ***
 i think this task should use dynamic analyze, however, i haven't found the input yet.
+i know they use tlscallback, but it too hard so i think i should come back to this later.
 
 
