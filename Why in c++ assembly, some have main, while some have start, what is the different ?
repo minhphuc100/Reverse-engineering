@@ -1,0 +1,361 @@
+The main difference lies in whether you are using a standard library or talking directly to the Operating System (OS).
+main and _start are related, but they are not the same thing.
+Think of it like this:
+Operating System     
+↓   
+_start        ← real entry point      
+↓
+runtime setup (libc / CRT)     
+↓    
+main         ← your C/C++ function      
+↓
+runtime cleanup      
+↓   
+exit()
+
+1. _start = real program entry point
+
+When the OS loads your executable (ELF on Linux, PE on Windows), it does NOT jump to main.
+
+It jumps to a low-level symbol called something like:
+
+_start (Linux ELF)
+start
+WinMainCRTStartup
+mainCRTStartup
+
+depending on platform/compiler/runtime.
+
+This is the actual first instruction executed.
+
+In pure assembly, you often define _start yourself:
+
+global _start
+
+section .text
+_start:
+    mov rax, 60     ; sys_exit
+    mov rdi, 0
+    syscall
+
+No C runtime exists here.
+
+You directly talk to the kernel.
+
+2. main = C/C++ runtime entry
+
+main is just a normal function expected by the C/C++ runtime.
+
+Example:
+
+int main() {
+    return 0;
+}
+
+But somebody must:
+
+prepare stack
+initialize libc
+initialize iostream
+initialize global constructors
+parse command line arguments
+setup environment variables
+call main
+call destructors after main
+terminate process correctly
+
+That "somebody" is _start + runtime library.
+
+3. Why sometimes you see _start
+
+You usually see _start when:
+
+writing pure assembly
+reverse engineering
+using -nostdlib
+making tiny executables
+OS development
+malware/reversing challenges
+embedded systems
+
+Because there is no C runtime.
+
+Example:
+
+gcc test.s -nostdlib
+
+Now YOU must provide _start.
+
+4. Why sometimes you only see main
+
+Normal C/C++ compilation automatically links runtime startup code.
+
+Example:
+
+g++ main.cpp
+
+The linker secretly adds startup files like:
+
+crt1.o
+crti.o
+crtn.o
+
+These contain _start.
+
+So your code only needs:
+
+int main()
+
+5. Linux example
+Your source
+#include <iostream>
+
+int main() {
+    std::cout << "Hello\n";
+}
+Real execution flow
+kernel
+  ↓
+_start          (from crt1.o)
+  ↓
+__libc_start_main
+  ↓
+main
+
+__libc_start_main is part of glibc.
+
+It handles runtime initialization.
+
+6. Windows equivalent
+
+Windows usually uses:
+
+mainCRTStartup
+    ↓
+main
+
+or GUI programs:
+
+WinMainCRTStartup
+    ↓
+WinMain
+
+The CRT = C Runtime.
+
+7. Important difference
+_start	main
+Actual entry point	User function
+Called by OS loader	Called by runtime
+No runtime initialized yet	Runtime already initialized
+Works without libc	Depends on libc/CRT
+Usually assembly-level	Usually C/C++
+Must exit manually	Can return
+8. Why returning from _start is dangerous
+
+In main:
+
+return 0;
+
+works because runtime converts it to:
+
+exit(0)
+
+But in _start:
+
+ret
+
+is invalid unless you set up a proper caller.
+
+Because _start was entered directly by the kernel, not by a normal call.
+
+So in _start, you usually do:
+
+mov rax, 60
+xor rdi, rdi
+syscall
+9. Reverse engineering note
+
+In IDA/Ghidra, sometimes you see:
+
+_start
+  →
+__libc_start_main
+  →
+main
+
+because disassemblers show the true entry point.
+
+Beginners often wonder:
+
+"Why isn't main first?"
+
+Because main is not the actual entry point of the executable.
+
+_start is.
+
+why is the task with only start and no main is categorize as c/c++ assembly ?
+Because C/C++ programs and assembly programs are often mixed together at the binary/runtime level.
+
+A program that only has _start is usually considered:
+
+a pure assembly program
+or a freestanding/no-runtime C program
+
+not a normal hosted C++ program.
+
+But tools, tutorials, or reverse engineers may still loosely call it “C/C++ assembly” because it uses:
+
+the same executable format (ELF/PE)
+the same ABI/calling convention
+the same linker
+the same startup model used by C/C++
+The important distinction
+
+There are actually 3 layers here:
+
+Layer	Example
+Language	C++, C, Assembly
+Runtime	libc / CRT
+Binary interface	ELF, PE, ABI
+
+main belongs mostly to the runtime/language convention.
+
+_start belongs to the OS + ABI convention.
+
+Normal C/C++ program
+
+Example:
+
+int main() {
+    return 0;
+}
+
+Compiler adds runtime startup:
+
+_start → libc startup → main
+
+This is called a hosted environment.
+
+You rely on:
+
+libc
+CRT
+runtime initialization
+Pure assembly program
+
+Example:
+
+global _start
+
+section .text
+_start:
+    mov rax, 60
+    xor rdi, rdi
+    syscall
+
+No runtime.
+
+No libc.
+
+No main.
+
+This is just:
+
+kernel
+executable loader
+your code
+But C can also work without main
+
+You can write C with _start directly:
+
+void _start() {
+    __asm__(
+        "mov $60, %rax\n"
+        "xor %rdi, %rdi\n"
+        "syscall"
+    );
+}
+
+compiled with:
+
+gcc test.c -nostdlib
+
+Now this is:
+
+written in C
+but behaves like raw assembly/runtime-free code
+
+This is called:
+
+freestanding C
+bare-metal style
+no CRT
+Why people group them together
+
+Because at low level:
+
+C compilers generate assembly
+Assembly follows the same ABI
+Both eventually become machine code
+Both use _start
+Both interact with linker/loader similarly
+
+Especially in:
+
+reverse engineering
+OS development
+exploit development
+compiler internals
+
+people blur the line between:
+
+“assembly”
+“low-level C”
+“runtime startup code”
+Key idea: main is NOT required by the OS
+
+The OS only needs:
+
+an executable
+a valid entry point address
+
+In ELF:
+
+e_entry
+
+points to _start.
+
+The kernel does not know or care about main.
+
+main is purely a convention created by the C runtime.
+
+So why “only _start” feels like assembly
+
+Because once you remove the runtime:
+
+you manually handle syscalls
+manually exit
+manually manage stack/registers
+manually initialize things
+
+which is traditionally assembly territory.
+
+Even if written in C.
+
+Analogy
+
+Think of:
+
+Situation	Analogy
+main	Driving a car normally
+_start	Building the engine and ignition yourself
+
+With main, the runtime already prepared everything.
+
+With _start, you're directly interfacing with the machine/OS.
+
+
+
+
+
+
