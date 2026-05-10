@@ -12,7 +12,20 @@ Download link https://crackmes.one/crackme/69b33ffcddd6176826ae8975
 ## Key Functions
 - .text:00402C20 start
 - sub_401220 : out
+-  still use std cout to output string
+- sub_4023D0 ?
+- sub_402240
+- sub_402190
+- 
 ## Interesting Strings
 -  
 -
 ## Current Hypothesis
+to many function to track, i don't know if that is important, but below, we still have some condition that can lead to the correct path, i think that is the first step to track
+
+even though i don't know how to use dynamic analyze, i have an anti-debugger
+
+
+
+
+
