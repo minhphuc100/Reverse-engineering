@@ -1,6 +1,6 @@
 In https://crackmes.one/lasts/
 Download link https://crackmes.one/crackme/69b33ffcddd6176826ae8975
-
+( i should recheck out the write-up of luckybalabala)
 # Binary Analysis: SimpleCrackme.exe
 **Date**: 3/12/2026
 **Objective**: find pass
@@ -11,11 +11,6 @@ Download link https://crackmes.one/crackme/69b33ffcddd6176826ae8975
 - Security features: Yes
 ## Key Functions
 - .text:00402C20 start
-- sub_401220 : out
--  still use std cout to output string
-- sub_4023D0 ?
-- sub_402240
-- sub_402190
 - 
 ## Interesting Strings
 -  
@@ -25,7 +20,7 @@ to many function to track, i don't know if that is important, but below, we stil
 
 even though i don't know how to use dynamic analyze, i have an anti-debugger
 
-There are two way to get to the "correct", but 1 easier way is maybe not the correct one.
+## Innitial reconnaissance
 
 
 
