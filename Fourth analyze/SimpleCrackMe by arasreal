@@ -1,6 +1,6 @@
 In https://crackmes.one/lasts/
 Download link https://crackmes.one/crackme/69b33ffcddd6176826ae8975
-( i should recheck out the write-up of luckybalabala)
+( i should recheck out the write-up of luckybalabala,( he does it so good though, so i wanna do the same as him))
 # Binary Analysis: SimpleCrackme.exe
 **Date**: 3/12/2026
 **Objective**: find pass
@@ -20,8 +20,7 @@ to many function to track, i don't know if that is important, but below, we stil
 
 even though i don't know how to use dynamic analyze, i have an anti-debugger
 
-## Innitial reconnaissance
-
+I need a new template!!
 
 
 
