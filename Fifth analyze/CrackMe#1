@@ -1,25 +1,19 @@
-# [Challenge Name] - Reverse Engineering Writeup
+# Crackme#1 - Reverse Engineering Writeup
+https://crackmes.one/crackme/6a00a162d7ff92e1214c008d
 
-**Difficulty:** [Beginner / Intermediate / Advanced]
-**Platform:** [Windows PE32 / ELF64 / Android APK / etc.]
-**Language:** [C / C++ / Rust / Go / Unknown]
-**Tools Used:** [IDA Free, Ghidra, x64dbg, strings, hex editor, etc.]
+**Difficulty:** 2.2
+**Platform:** Windows PE32 
+**Language:** C / C++ 
+**Tools Used:** IDA Free
 
 ---
 
 ## 1. Introduction
 
-This writeup documents my approach to solving "[binary/challenge name]".
+This writeup documents my approach to solving "Crackme#1".
 
 ### Objective
-[Describe the challenge goal briefly]
-
-Examples:
-- Recover the correct password
-- Bypass license verification
-- Find the hidden flag
-- Understand malware behavior
-- Defeat anti-debugging protection
+Get the password
 
 ---
 
@@ -30,51 +24,35 @@ Examples:
 Basic information about the target binary:
 
 ```txt
-Filename: [filename]
-Size: [size]
-Type: [PE32 / ELF64 / Mach-O]
-Architecture: [x86 / x64 / ARM]
-Compiler: [Optional]
-Protections: [ASLR / PIE / NX / Stripped / UPX]
+Filename: crackmes
+Size: 214016 Bytes
+Type: PE32
+Architecture: x86 / x64
 
 2.2 Basic Execution Test
 
-Describe initial behavior when running the program.
+Enter the password: test?
 
-Example:
-
-Enter password: test
-[-] Wrong password!
+and no output
 
 Observations:
 
-[Program asks for user input]
-[GUI or console application]
-[Network activity]
-[Possible anti-debugging]
-[Program exits immediately]
-[Interesting error messages]
+Program asks for user input and validate it by internal logic
 
+Use IsDebuggerPresent -> antiDebugger function ?
 
 ## 3. Static Analysis
 3.1 Binary Structure Analysis
 
 Analyze executable sections and overall layout.
 
-Section  	Virtual Address	  Raw Offset	Purpose
-.text    	[addr]	          [offset]	  Executable code
-.rdata  	[addr]  	        [offset]	  Read-only data
-.data	    [addr]  	        [offset]	  Initialized data
-.rsrc    	[addr]	          [offset]	  Resources
-.reloc   	[addr]  	        [offset]	  Relocations
-
-Important observations:
-
-[Packed or unpacked]
-[Suspicious sections]
-[Custom loader]
-[High entropy]
-[Debug symbols present]
+Section  	Virtual Address	  Raw Offset	    Purpose
+.text    	140001000	         400	      Executable code
+.idata  	140021000  	        1F800	      Read-only data
+.rdata	    140021288  	        1FA88	      Read-only
+.data    	140032000	        30400	      Read and write
+.pdata   	140035000  	        31600         Read-only
+.fptable    140037000           33600         Read and write
 
 3.2 String Analysis
 
@@ -83,27 +61,32 @@ Search for readable strings using:
 strings
 .rdata
 .data
+
 Unicode strings
 Cross-references
-Address	  String	    Notes
-[addr]	  [string]	  [purpose]
+Address	                length          String	            Notes
+.rdata:000000014002D750	00000009	C	Success!            the output
+.rdata:000000014002D75C	00000006	C	Fail!               the output (weird, i use test but no output ?)
+.rdata:000000014002D768	00000015	C	Enter the password: ask user input
 
 Key findings:
-
-[Password fragments]
-[Error messages]
-[Function names]
-[URLs/IPs]
-[Registry paths]
-[Hidden clues]
+No ?
 
 3.3 Function Analysis
 
 Identify important functions.
 
-Function	Purpose
-[func]	  [description]
-[func]	  [description]
+Function   address     	                        Purpose
+main	   .text:0000000140001F90               main
+
+# additional learn
+notice
+mov rax, gs:60h
+
+This 
+
+
+
 
 Relevant API calls:
 
