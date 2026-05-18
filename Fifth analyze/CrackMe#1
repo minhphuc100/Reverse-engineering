@@ -83,7 +83,8 @@ main	   .text:0000000140001F90               main
 notice
 mov rax, gs:60h
 
-This 
+This is about TEB and PEB ( thread and process environment block )
+It is indicate the pointer to PEB ( process environment block ) is now rax
 
 
 
