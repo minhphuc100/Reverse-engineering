@@ -1,1 +1,90 @@
 
+In this file, we will learn about how to use x64dbg for exe, then gdb for linux
+
+I. x64dbg
+Essential Keyboard Shortcuts
+KeyAction
+F9  Run / Continue
+F8  Step Over (next line)
+F7  Step Into (enter function)
+F4  Run to cursor
+F2  Toggle breakpoint
+Ctrl+G  Go to address
+Ctrl+F  Search in disassembly
+Space  Assemble / patch instruction
+Ctrl+B  Search for byte pattern
+
+Setting Breakpoints
+Software Breakpoint (most common)
+
+Click on a line → press F2
+// Red highlight = breakpoint set
+
+Breakpoint on API call
+In the Command Bar (bottom):
+bp CreateFileA
+bp VirtualAlloc
+bp WriteProcessMemory
+
+Hardware Breakpoint (on memory access)
+Right-click address in dump →
+Breakpoint → Hardware → On Access/Write/Execute
+Conditional Breakpoint
+Right-click a BP → Edit →
+Set condition: EAX == 1
+// Only pauses when condition is true
+
+Navigating Disassembly
+Ctrl+G          → jump to any address or symbol
+                   e.g: 0x401000  or  MessageBoxA
+
+Right-click → Follow in Disassembler   → jump to call target
+Right-click → Follow in Memory Dump    → inspect raw bytes
+
+; To go back after jumping:
+Alt+Left Arrow  → navigate back
+
+Reading Registers Panel
+EIP / RIP  →  current instruction pointer (where you are)
+ESP / RSP  →  stack pointer
+EAX / RAX  →  usually holds return values
+EBX, ECX, EDX  →  general purpose
+
+Flags:
+ZF (Zero Flag)   →  set when result = 0
+CF (Carry Flag)  →  arithmetic carry
+SF (Sign Flag)   →  negative result
+
+Double-click any register to modify its value
+
+
+Patching Instructions
+NOP out a jump (bypass check)
+1. Click the JNZ / JE instruction
+2. Press Space → type: nop
+3. Repeat for each byte if needed
+
+Or right-click → Patch → Fill with NOPs
+Save patched binary
+File → Patch File → select all patches → Patch File
+→ saves a new fixed .exe
+
+Searching for Strings & Patterns
+Find hardcoded strings
+Right-click in disassembly →
+Search For → All Referenced Strings
+→ double-click any string to jump to it
+Find all API calls
+Right-click → Search For → All Intermodular Calls
+Search bytes (pattern scan)
+Ctrl+B → enter hex pattern: FF 25 ?? ?? ?? ??
+
+Memory Dump Panel
+Ctrl+G in dump  → go to any address
+Right-click     → Follow in Disassembler
+                → Set Breakpoint
+                → Modify bytes directly
+
+; To watch a variable:
+Right-click register (e.g. EAX) →
+"Follow in Dump" → tracks memory it points to
