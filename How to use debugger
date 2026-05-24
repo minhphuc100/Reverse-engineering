@@ -27,11 +27,10 @@ bp VirtualAlloc
 bp WriteProcessMemory
 
 Hardware Breakpoint (on memory access)
-Right-click address in dump →
-Breakpoint → Hardware → On Access/Write/Execute
+Right-click address in dump → Breakpoint → Hardware → On Access/Write/Execute
+
 Conditional Breakpoint
-Right-click a BP → Edit →
-Set condition: EAX == 1
+Right-click a BP → Edit → Set condition: EAX == 1
 // Only pauses when condition is true
 
 Navigating Disassembly
@@ -41,7 +40,7 @@ Ctrl+G          → jump to any address or symbol
 Right-click → Follow in Disassembler   → jump to call target
 Right-click → Follow in Memory Dump    → inspect raw bytes
 
-; To go back after jumping:
+To go back after jumping:
 Alt+Left Arrow  → navigate back
 
 Reading Registers Panel
@@ -66,18 +65,22 @@ NOP out a jump (bypass check)
 
 Or right-click → Patch → Fill with NOPs
 Save patched binary
-File → Patch File → select all patches → Patch File
-→ saves a new fixed .exe
+File → Patch File → select all patches → Patch File → saves a new fixed .exe
 
 Searching for Strings & Patterns
-Find hardcoded strings
-Right-click in disassembly →
-Search For → All Referenced Strings
-→ double-click any string to jump to it
-Find all API calls
+
+1. Find hardcoded strings 
+
+Right-click in disassembly → Search For → All Referenced Strings → double-click any string to jump to it
+
+2. Find all API calls
 Right-click → Search For → All Intermodular Calls
+
 Search bytes (pattern scan)
 Ctrl+B → enter hex pattern: FF 25 ?? ?? ?? ??
+
+(in python, we can use rb open file option to take file to bytes and do some automated task)
+
 
 Memory Dump Panel
 Ctrl+G in dump  → go to any address
