@@ -79,13 +79,13 @@ Identify important functions.
 Function   address     	                        Purpose
 main	   .text:0000000140001F90               main
 
-# additional learn
+############### additional learn
 notice
 mov rax, gs:60h
 
 This is about TEB and PEB ( thread and process environment block )
 It is indicate the pointer to PEB ( process environment block ) is now rax
-
+###############
 
 Relevant API calls:
 
@@ -96,6 +96,50 @@ WriteFile
 
 
 3.4 Control Flow Analysis
+-----------------------
+The file is too hard for me to analyze right now, even with the write up, there are still some thing i can learn from that
+The Important Functions and Blocks ( from the write up ) ( even if i have classify some function, but it is not detailed enough )
+
+
+Anti-Debugging Blocks
+0x140001fcc
+0x140001ff5
+0x140002082
+0x1400020de
+
+IsDebuggerPresent Call
+0x14000205d
+
+Password Generation Loop
+0x140002150 → 0x1400021a1
+
+Password Comparison
+0x1400021c5 → 0x1400021d0
+
+Success Block
+0x1400021d9
+
+Failure Block
+0x1400021e2
+
+Let's analyze each part
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -106,9 +150,6 @@ WriteFile
 Debugger/environment used:
 
 [x64dbg]
-[gdb]
-[WinDbg]
-[Virtual machine]
 
 Breakpoints set:
 
