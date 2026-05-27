@@ -124,115 +124,47 @@ Failure Block
 
 Let's analyze each part
 
+In psuedocode,
+
+we have v29= 93
+and inside isdebuggerpresent block, we saw, v29=103
+
+Then, when jmp to xref
+v17 is result value of v16 and v29
+then 
+funtion sub_140003000(buf2,1u,v28,v17)
+
+where v16 is byte of >/<>608. or 3e 2f 3c 3e 36 30 38 2e in hex (v36 )
+
+in that function, assume that buf2 will have the final password because:
+
+we compare v22 and v20:
+v22 = buf1 (input)
+v20 = buf2 
+in condition result check
+
+After assuming that is how the program work
+
+the password can be >/<>608. xor with 93(d) or 103(d)
+then: password is crackmes or YH[YQW_I
 
 
 
+## 4. Dynamic Analysis ( the anti debug function so i don't run it) 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 4. Dynamic Analysis
-4.1 Debugging Setup
-
-Debugger/environment used:
-
-[x64dbg]
-
-Breakpoints set:
-
-[main]
-[strcmp]
-[GetProcAddress]
-[Custom function]
-4.2 Runtime Behavior
-
-Describe runtime observations.
-
-Examples:
-
-Registers changed after input
-Memory buffers decrypted at runtime
-Hidden strings revealed dynamically
-Network traffic observed
-
-Example memory dump:
-
-0x401000: 73 65 63 72 65 74
-4.3 Tracing the Validation Logic
-
-Explain how the validation works.
-
-Example:
-
-User input copied into buffer
-Program decrypts hidden password
-strcmp compares both strings
-Success branch triggered if equal
-
-
-## 5. Solution / Flag Recovery
-5.1 Recovering the Password or Flag
-
-Explain how the final solution was obtained.
-
-Reasoning:
-
-[Decryption process]
-[String reconstruction]
-[Algorithm reversal]
-[Memory extraction]
-
-5.2 Verification
-
-Test against original binary.
-
-Command:
-
-echo "[password]" | [binary]
-
-Output:
-
-[+] Access Granted!
-
-Confirmation:
-
-[Program accepted input]
-[Flag displayed]
-[Challenge solved]
-
+##5 ??
 
 ## 6. Technical Details
 6.1 Protection Mechanisms
 
-Document protections encountered.
-
 Technique	Description
 Anti-debugging	[details]
-Packing	[details]
-Obfuscation	[details]
+if there are debuger, the xor pass will be change from 93 to 103, which is the wrong password
+
 Encryption	[details]
+the encypted pass is 3e 2f 3c 3e 36 30 38 2e with xor key 93(dec)
+
 6.2 Reverse Engineering Notes
-
-Interesting implementation details:
-
-[Compiler artifacts]
-[Calling convention]
-[Stack layout]
-[Custom crypto]
-[Control flow tricks]
 
 
 ## 7. Alternative Approaches (if have ?, this should be other people write up to expand your knowledge )
@@ -243,52 +175,13 @@ Interesting implementation details:
 
 8.1 Solution Summary
 
-Recovered Password / Flag: [solution]
-Method: [short summary]
-Main Weakness: [what made challenge solvable]
+Recovered Password / Flag: crackmes
+Method: function and variable tracking
+Main Weakness: still simple enough to understand
 
 8.2 Lessons Learned
 
-[Important RE concept]
-[Useful debugging insight]
-[Common protection technique]
-[Tool usage lesson]
-
-## 9. Tools Reference
-
-Tool    	Purpose
-[Tool]  	[Usage]
-[Tool]  	[Usage]
-[Tool]  	[Usage]
-
-
-## 10. Appendix
-
-10.1 Useful Commands
-strings binary.exe
-objdump -d binary
-file binary
-checksec binary
-
-10.2 Important Assembly Snippets
-
-
-10.3 Final Verification
-
-C:\>[command]
-[program output]
-
-Author: [Your Name]
-Date: [Month Year]
-Challenge: [Challenge Name]
-
-
-You can reuse this structure for:
-
-- Crackmes
-- CTF reversing challenges
-- Malware analysis
-- License bypasses
-- Packers/unpackers
-- Anti-debugging research
-- Binary exploitation prep notes
+look at variable and assume what is its purpose ( using jmp to xref)
+track all the variables that might be important
+look at the strings, see if any thing happening with it
+quickly assume what each funtion do, quickly try candidate password before forget and wandering too far 
