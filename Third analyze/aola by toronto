@@ -1,0 +1,115 @@
+In https://crackmes.one/lasts/
+Download link https://crackmes.one/crackme/69eca77717539b5175d120a9
+
+# Binary Analysis: b.exe
+**Date**: 4/25/2026
+**Objective**: find the password
+## Initial Reconnaissance
+- File type: executable
+- Architecture: window x86-64
+- Stripped: Yes 
+- Security features: Yes
+## Key Functions
+- text:0000000140001125 start
+- tlscallback_0
+- tlscallback_1
+## Interesting Strings
+- no interesting string ( it not in memory)
+- 
+-
+## Current Hypothesis
+
+all string is in .bss ( not learn about each part of a file yet) but, it basicly mean the strings is packed or encrypted, it is uninitialized; exists only in RAM.
+
+
+***
+i think this task should use dynamic analyze, however, i haven't found the input yet.
+i know they use tlscallback, but it too hard so i think i should come back to this later.
+
+In sub_140003420()
+we have buffer = ko after xor
+and v4 = on
+
+######################
+__int64 sub_140003420()
+{
+  const char *v0; // rcx
+  char Buffer[2]; // [rsp+20h] [rbp-D8h] BYREF
+  char v3; // [rsp+22h] [rbp-D6h]
+  char v4[2]; // [rsp+28h] [rbp-D0h] BYREF
+  char v5; // [rsp+2Ah] [rbp-CEh]
+  char Str1[64]; // [rsp+30h] [rbp-C8h] BYREF
+  _BYTE v7[64]; // [rsp+70h] [rbp-88h] BYREF
+  __m128i v8; // [rsp+B0h] [rbp-48h] BYREF
+  char v9; // [rsp+C0h] [rbp-38h]
+sub_1400018B7();
+  v3 = 0;
+  v5 = 0;
+  v9 = 0;
+  // ra ko
+  *(_WORD *)Buffer = word_140004020 ^ 0xAAAA;
+  v8 = _mm_xor_si128(_mm_shuffle_epi32(_mm_cvtsi32_si128(0xAAAAAAAA), 0), (__m128i)xmmword_140004030); 
+  // on
+  *(_WORD *)v4 = word_14000401E ^ 0xAAAA;
+  sub_140002F40("%s", v8.m128i_i8);
+  sub_140002EE0("%63s", Str1);
+  sub_140001770(v7);
+  if ( !strcmp(Str1, v0) )
+    puts(Buffer);
+  else
+    puts(v4);
+  return 0;
+#######################
+!!!
+in v8
+the xmmword_140004030 is 8A90CED8C5DDD9D9CBDA8AD8CFDEC4EF, after xor with 0xAAAAAAAA
+the result is  :drowssap retnE which is reverse of Enter password: (that how i can find the string)
+
+let's take a look at code below to find the input
+the sub_140002EE0("%63s", Str1); can be the input
+
+so the password get can be the
+sub_140001770(v7); which can affect the password
+or
+v0 is still rcx
+
+Let look back the sub_140003420() input parameter
+Code = sub_140003420((unsigned int)dword_140009004, qword_140009008, qword_140009010);
+
+three input is locate in .bss part, and "coincidentally" next to each other, so i kind of pivot to the fact that
+sub_140001770(v7) was affecting the password
+Inside sub_140001770(v7)
+####################
+_int64 __fastcall sub_140001770(__int64 a1)
+{
+  __int64 result; // rax
+
+  for ( result = 0; result != 13; ++result )
+    *(_BYTE *)(a1 + result) = byte_140004010[result] ^ 0xAA;
+  *(_BYTE *)(a1 + 13) = 0;
+  return result;
+}
+##########################3
+
+here, for ( result = 0; result != 13; ++result ) 
+is a simple loop, run from 0-12, which the password can be 13 char long
+
+*(_BYTE *)(a1 + result) = byte_140004010[result] ^ 0xAA;
+a1 is the 64-byte buffer v7 from your previous function.
+
+The loop takes 13 sequential bytes starting at the global address byte_140004010.
+It bitwise XORs each byte with 0xAA (the exact same key used to decrypt the "Enter password: " prompt earlier!).
+It writes the decrypted characters into v7.
+
+*(_BYTE *)(a1 + 13) = 0;
+After the loop finishes, it manually places a null terminator (\x00) at the end of the string to safely finalize it.
+
+now let take a look at variable byte_140004010, hopefully there is data
+data byte_140004010  db 0F3h, 0C3h, 2 dup(0DAh), 0C3h, 0CFh, 87h, 0E1h, 0C3h
+.data:0000000140004010                                         ; DATA XREF: sub_140001770+4↑o
+.data:0000000140004019                 db 87h, 0F3h, 0CBh, 0D3h, 0
+
+which after xor with 0xAA,
+we finally found the password : Yippie-Ki-Yay
+
+Done ( no write up read on, done by myself ) ( with little help from ai, but not put the whole file to it to analyze)
