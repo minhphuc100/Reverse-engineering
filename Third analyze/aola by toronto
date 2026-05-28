@@ -105,7 +105,7 @@ It writes the decrypted characters into v7.
 After the loop finishes, it manually places a null terminator (\x00) at the end of the string to safely finalize it.
 
 now let take a look at variable byte_140004010, hopefully there is data
-data byte_140004010  db 0F3h, 0C3h, 2 dup(0DAh), 0C3h, 0CFh, 87h, 0E1h, 0C3h
+.data byte_140004010  db 0F3h, 0C3h, 2 dup(0DAh), 0C3h, 0CFh, 87h, 0E1h, 0C3h
 .data:0000000140004010                                         ; DATA XREF: sub_140001770+4↑o
 .data:0000000140004019                 db 87h, 0F3h, 0CBh, 0D3h, 0
 
@@ -113,3 +113,9 @@ which after xor with 0xAA,
 we finally found the password : Yippie-Ki-Yay
 
 Done ( no write up read on, done by myself ) ( with little help from ai, but not put the whole file to it to analyze)
+
+I still wonder why output texts are flipped,Why did this happen?
+This is a side effect of Little-Endian byte ordering, which x86/x64 processors use natively.
+When a 16-byte text string is stored in memory as an xmmword (a 128-bit integer), 
+the processor reads the very last characters of the string as the highest-order bytes, 
+and the first characters as the lowest-order bytes.
