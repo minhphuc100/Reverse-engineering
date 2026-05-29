@@ -19,76 +19,33 @@ take 13 characters password
 Basic information about the target binary:
 
 ```txt
-Filename: [filename]
-Size: [size]
-Type: [PE32 / ELF64 / Mach-O]
-Architecture: [x86 / x64 / ARM]
-Compiler: [Optional]
-Protections: [ASLR / PIE / NX / Stripped / UPX]
+Filename: CFB4.exe
+Size: 263680
+Type: PE32
+Architecture:x64
 
 2.2 Basic Execution Test
 
-Describe initial behavior when running the program.
+In the jpg
 
-Example:
+Program asks for user input, then validitating it.
 
-Enter password: test
-[-] Wrong password!
-
-Observations:
-
-[Program asks for user input]
-[GUI or console application]
-[Network activity]
-[Possible anti-debugging]
-[Program exits immediately]
-[Interesting error messages]
 
 
 ## 3. Static Analysis
 3.1 Binary Structure Analysis
-
-Analyze executable sections and overall layout.
-
-Section  	Virtual Address	  Raw Offset	Purpose
-.text    	[addr]	          [offset]	  Executable code
-.rdata  	[addr]  	        [offset]	  Read-only data
-.data	    [addr]  	        [offset]	  Initialized data
-.rsrc    	[addr]	          [offset]	  Resources
-.reloc   	[addr]  	        [offset]	  Relocations
-
-Important observations:
-
-[Packed or unpacked]
-[Suspicious sections]
-[Custom loader]
-[High entropy]
-[Debug symbols present]
+no need for this file, the input is encrypted right away, and compare to st -> this is more like crypto but in re
 
 3.2 String Analysis
 
-Search for readable strings using:
-
-strings
-.rdata
-.data
-Unicode strings
-Cross-references
-Address	  String	    Notes
-[addr]	  [string]	  [purpose]
-
-Key findings:
-
-[Password fragments]
-[Error messages]
-[Function names]
-[URLs/IPs]
-[Registry paths]
-[Hidden clues]
+as explain above, the password is not found in string, the structure of the file is not very complex, the main thing is the encrypt function
 
 3.3 Function Analysis
 
-Identify important functions.
+The main : loc_1400060FF
+
+
+
 
 Function	Purpose
 [func]	  [description]
