@@ -47,44 +47,6 @@ The main : loc_1400060FF
 
 
 
-Function	Purpose
-[func]	  [description]
-[func]	  [description]
-
-Relevant API calls:
-
-strcmp
-memcmp
-IsDebuggerPresent
-CreateFile
-recv
-VirtualAlloc
-
-Interesting logic:
-
-// Pseudocode or reconstructed logic
-----------------------------
-if (input == secret) {
-    success();
-} else {
-    failure();
-}
-----------------------------
 
 
-3.4 Control Flow Analysis
 
-Describe important branches or checks.
-
-Example:
---
-cmp eax, 0
-jne wrong_password
---
-Observations:
-
-[Conditional jumps]
-[Loops]
-[Encryption routines]
-[Checksum validation]
-[Obfuscation]
