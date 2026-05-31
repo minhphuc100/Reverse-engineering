@@ -44,6 +44,9 @@ as explain above, the password is not found in string, the structure of the file
 
 The main : loc_1400060FF
 
+At the final condition, it compare with DF(h)
+So technically, we can reverse each step to find the final password or change the flag by add breakpoint very easily
+
 
 
 
