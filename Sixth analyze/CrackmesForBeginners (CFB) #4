@@ -52,7 +52,10 @@ So technically, we can reverse each step to find the final password or change th
 #############################################
 I will back to this after getting better, but after giving that to ai, the final password is: rotors_spin_9
 
-
+The main hard part about this is that:
+- The obfuscated part is very long, and it is more about crypto than about reverse engineering
+- The reverse work for this task is really heavy for human to do it, which involve mostly in recall each instruction until find the answer, so for me, it can really take weeks to fully understand and do it myself.
+-> So, until i am getting better at re, i shall take a look back at this task.
 
 
 
