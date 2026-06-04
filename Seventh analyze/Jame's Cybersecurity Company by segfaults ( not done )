@@ -1,3 +1,4 @@
+So hard, skip, i think
 This is linux and require some extra package.
 https://crackmes.one/crackme/6a0c8b608fab7bbca2730221
 # [Jame's Cybersecurity Company] - Reverse Engineering Writeup
@@ -5,7 +6,7 @@ https://crackmes.one/crackme/6a0c8b608fab7bbca2730221
 **Difficulty:** 2.0
 **Platform:**  ELF64 
 **Language:** C / C++ 
-**Tools Used:** [IDA Free, Ghidra, x64dbg, strings, hex editor, etc.]
+**Tools Used:** IDA Free
 
 ---
 
@@ -20,31 +21,15 @@ find the 'Purge' protocol and wipe the company’s entire directory structure ( 
 
 Basic information about the target binary:
 
-```txt
-Filename: [filename]
-Size: [size]
-Type: [PE32 / ELF64 / Mach-O]
-Architecture: [x86 / x64 / ARM]
-Compiler: [Optional]
-Protections: [ASLR / PIE / NX / Stripped / UPX]
+Filename: there are two file: database.jsonc and target_bin
+Size: 1341 and 47408
+Type:  ELF64 
+Architecture: x64
+Compiler: c++
+Protections: Stripped 
 
 2.2 Basic Execution Test
-
-Describe initial behavior when running the program.
-
-Example:
-
-Enter password: test
-[-] Wrong password!
-
-Observations:
-
-[Program asks for user input]
-[GUI or console application]
-[Network activity]
-[Possible anti-debugging]
-[Program exits immediately]
-[Interesting error messages]
+I don't know how to run ?
 
 
 ## 3. Static Analysis
