@@ -1,0 +1,9 @@
+I want to create malware analyze project after learning more about re
+
+Pe Files: .exe and .dll
+
+Static: Extract opcodes, strings, headers
+
+Dynamic: run sandbox cuckoo, collecting api call
+
+Binary: Converting to 2D image for CNNs
