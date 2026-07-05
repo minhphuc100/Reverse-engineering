@@ -1,1 +1,101 @@
+# [Easy Crackme For Beginners] - Reverse Engineering Writeup
+https://crackmes.one/crackme/6a3ca5c88a86e4c2c5525555
+**Difficulty:** Beginner 
+**Platform:** Windows PE32
+**Language:** C / C++ 
+**Tools Used:** IDA Free
+---
 
+## 1. Introduction
+
+
+### Objective
+Find the password, don't patch the file
+---
+
+## 2. Initial Reconnaissance
+
+### 2.1 File Identification
+
+Basic information about the target binary:
+
+```txt
+Filename: kolaycrackme.exe
+Size: 937kb
+Type: PE32
+Architecture: x86 / x64 
+
+2.2 Basic Execution Test
+
+Describe initial behavior when running the program.
+
+Example:
+
+Enter password: test
+[-] Wrong password!
+
+
+## 3. Static Analysis
+3.1 Binary Structure Analysis
+
+Analyze executable sections and overall layout.
+
+Section  	Virtual Address	  Raw Offset	Purpose
+
+
+Important observations:
+
+[Packed or unpacked]
+[Suspicious sections]
+[Custom loader]
+[High entropy]
+[Debug symbols present]
+
+3.2 String Analysis
+
+Search for readable strings using:
+
+strings
+.rdata
+.data
+Unicode strings
+Cross-references
+Address	  String	    Notes
+[addr]	  [string]	  [purpose]
+
+Key findings:
+
+[Password fragments]
+[Error messages]
+[Function names]
+[URLs/IPs]
+[Registry paths]
+[Hidden clues]
+
+3.3 Function Analysis
+
+Identify important functions.
+
+Function	Purpose
+[func]	  [description]
+[func]	  [description]
+
+Relevant API calls:
+
+strcmp
+memcmp
+IsDebuggerPresent
+CreateFile
+recv
+VirtualAlloc
+
+Interesting logic:
+
+// Pseudocode or reconstructed logic
+----------------------------
+if (input == secret) {
+    success();
+} else {
+    failure();
+}
+----------------------------
