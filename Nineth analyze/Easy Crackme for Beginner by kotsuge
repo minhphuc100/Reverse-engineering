@@ -31,8 +31,13 @@ Describe initial behavior when running the program.
 
 Example:
 
-Enter password: test
-[-] Wrong password!
+========================================
+         kotsugeINT3 kolay crackme
+========================================
+Enter Key: 111
+
+[-] yok yanlis key.
+Press any key to continue . . .
 
 
 ## 3. Static Analysis
@@ -42,14 +47,7 @@ Analyze executable sections and overall layout.
 
 Section  	Virtual Address	  Raw Offset	Purpose
 
-
-Important observations:
-
-[Packed or unpacked]
-[Suspicious sections]
-[Custom loader]
-[High entropy]
-[Debug symbols present]
+No thing special in here ?
 
 3.2 String Analysis
 
@@ -83,19 +81,5 @@ Function	Purpose
 Relevant API calls:
 
 strcmp
-memcmp
-IsDebuggerPresent
-CreateFile
-recv
-VirtualAlloc
 
-Interesting logic:
-
-// Pseudocode or reconstructed logic
-----------------------------
-if (input == secret) {
-    success();
-} else {
-    failure();
-}
 ----------------------------
