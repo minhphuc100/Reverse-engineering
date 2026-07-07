@@ -51,32 +51,31 @@ No thing special in here ?
 
 3.2 String Analysis
 
-Search for readable strings using:
+Search for readable strings :
 
 strings
-.rdata
-.data
-Unicode strings
-Cross-references
-Address	  String	    Notes
-[addr]	  [string]	  [purpose]
-
-Key findings:
-
-[Password fragments]
-[Error messages]
-[Function names]
-[URLs/IPs]
-[Registry paths]
-[Hidden clues]
+.rdata:00000000004BD098	00000033	C	\n[!]yanlis key hadi yol al tekrar ac uygulamayi...
+.rdata:00000000004BD0D0	0000002A	C	========================================\n
+.rdata:00000000004BD100	00000024	C	         kotsugeINT3 kolay crackme\n
+.rdata:00000000004BD124	0000000C	C	Enter Key: 
+.rdata:00000000004BD130	00000010	C	\n[+] helal bro.
+.rdata:00000000004BD140	00000015	C	\n[-] yok yanlis key.
+.rdata:00000000004BD155	00000006	C	pause
 
 3.3 Function Analysis
 
 Identify important functions.
+sub_40230C() is the main function
 
-Function	Purpose
-[func]	  [description]
-[func]	  [description]
+Inside, our input is v11, control variable is v18
+
+A big while loop compare v18 with 999.
+
+goto label32 is jump to v18=999, which will exit the while,
+
+The correct path is the helal bro.
+
+
 
 Relevant API calls:
 
