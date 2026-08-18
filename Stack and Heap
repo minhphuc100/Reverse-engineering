@@ -33,7 +33,7 @@ Higher	                    Arg 5, 6, ...              	Caller	                  
                             Saved RBP (8 bytes)	        Callee (Prologue)	              Preserves the caller's frame pointer (optional).
                             Local Variables            	Callee (Prologue)	              Storage for internal function data.
                             Saved Registers	            Callee (Prologue)              	Preserves non-volatile registers like RBX, RSI.
-                            Lower                                                      	(Current RSP)	—	The "top" of the stack.
+Lower                      (Current RSP)	—	The "top" of the stack.
 
 
 
