@@ -23,7 +23,7 @@ Can be .exe, .obj, .dll and .lst
 
 Special case .NET assemblies
 
-Small example: ( but i haven't try it on myy pc, maybe i should try later ! )
+Small example: ( but i haven't try it on my pc, maybe i should try later ! )
 ---
 nasm
 ; hello.asm - 64-bit Windows Hello World (NASM)
