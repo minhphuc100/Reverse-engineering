@@ -71,7 +71,8 @@ RSI - Known as the source index. Used as the source pointer in string operations
 RDI - Known as the destination index. Used as the destination pointer in string operations.
 RSP - The stack pointer. Holds the address of the top of the stack.
 RBP - The base pointer. Holds the address of the base (bottom) of the stack.
-
+RID - Next instruction
+Eflags - save flags
 Moreover, each register doesn't have to hold these type of data, but it gonna be extremely helpful when us and computer follow the rule to know where is value of a function went.
 There are additional registers r8 to r15 which are designed to be used by integer type values and don't have any special uses
 More info in microsoft.
