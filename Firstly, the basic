@@ -339,9 +339,14 @@ Callee (Hàm được gọi) có trách nhiệm tự dọn dẹp Stack trước 
 Nó thực hiện việc này bằng cách sử dụng lệnh mã máy RET n, trong đó n là tổng số byte của các tham số cần xóa khỏi stack.
 
 Fastcall
+The first two DWORD (32-bit) or smaller arguments are passed in the ECX and EDX registers (first argument in ECX, second in EDX).
+Any remaining arguments are pushed onto the stack in right-to-left order.
+Stack Cleanup: The callee (the called function) is responsible for cleaning up the stack (similar to stdcall).
+Return Value: Integer or pointer return values are placed in the EAX register.
 
 
-thiscall1
+
+thiscall1,  for object, ecx will save the object, edx is the para
 
 
 --------------------------------------
@@ -469,7 +474,15 @@ It thinks: "Do you want me to check if that address holds a 1-byte 0, a 4-byte 0
 
 You must use byte ptr to tell it exactly how much memory to inspect.
 
+Switch case:!!!
 
+
+
+REP:
+lea edi [src]
+lea esi [dst]
+mov ecx, 100h
+rep movsb ; will memcpy(dest,src.100h)
 
 
 ***
